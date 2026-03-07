@@ -24,6 +24,11 @@ app_license = "mit"
 # Includes in <head>
 # ------------------
 
+website_route_rules = [
+    {"from_route": "/intranet/<path:app_path>", "to_route": "intranet"},
+    {"from_route": "/intranet", "to_route": "intranet"},
+]
+
 # include js, css files in header of desk.html
 # app_include_css = "/assets/heva_intranet/css/heva_intranet.css"
 # app_include_js = "/assets/heva_intranet/js/heva_intranet.js"
@@ -143,23 +148,11 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"heva_intranet.tasks.all"
-# 	],
-# 	"daily": [
-# 		"heva_intranet.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"heva_intranet.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"heva_intranet.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"heva_intranet.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"heva_intranet.training_scraper.fetch_trainings"
+	],
+}
 
 # Testing
 # -------

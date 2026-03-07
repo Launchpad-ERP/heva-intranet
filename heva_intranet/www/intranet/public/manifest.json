@@ -1,0 +1,29 @@
+{
+    "name": "Heva Intranet",
+    "short_name": "Heva",
+    "description": "Heva Intranet – Zeiterfassung, Abwesenheiten, Events & mehr",
+    "start_url": "/intranet",
+    "scope": "/intranet",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f8fafc",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+            "src": "/assets/heva_intranet/frontend/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/heva_intranet/frontend/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/assets/heva_intranet/frontend/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

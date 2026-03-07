@@ -1,0 +1,182 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "EMP-.#####",
+ "creation": "2026-02-06 23:48:00.104517",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_name",
+  "user",
+  "column_break_1",
+  "email",
+  "company_email",
+  "section_personal",
+  "date_of_birth",
+  "gender",
+  "column_break_2",
+  "mobile_phone",
+  "section_employment",
+  "department",
+  "designation",
+  "date_of_joining",
+  "column_break_3",
+  "status",
+  "reports_to",
+  "section_datev",
+  "datev_employee_id",
+  "datev_employee_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "Benutzer",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "E-Mail",
+   "options": "Email"
+  },
+  {
+   "fieldname": "company_email",
+   "fieldtype": "Data",
+   "label": "Firmen-Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "section_personal",
+   "fieldtype": "Section Break",
+   "label": "Pers\u00f6nliche Daten"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Geburtsdatum"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Geschlecht",
+   "options": "\nM\u00e4nnlich\nWeiblich\nDivers"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_phone",
+   "fieldtype": "Data",
+   "label": "Mobiltelefon",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "section_employment",
+   "fieldtype": "Section Break",
+   "label": "Anstellung"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Abteilung"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Position"
+  },
+  {
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Eintrittsdatum"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Aktiv",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Aktiv\nInaktiv\nAusgeschieden"
+  },
+  {
+   "fieldname": "reports_to",
+   "fieldtype": "Link",
+   "label": "Vorgesetzter",
+   "options": "Intranet Employee"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_datev",
+   "fieldtype": "Section Break",
+   "label": "DATEV"
+  },
+  {
+   "fieldname": "datev_employee_id",
+   "fieldtype": "Data",
+   "label": "DATEV Mitarbeiter-ID"
+  },
+  {
+   "fieldname": "datev_employee_number",
+   "fieldtype": "Data",
+   "label": "DATEV Personalnummer"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-02-06 23:48:00.104517",
+ "modified_by": "Administrator",
+ "module": "Heva Intranet",
+ "name": "Intranet Employee",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "employee_name",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,256 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "RK-.YYYY.-.#####",
+    "creation": "2026-02-06 23:48:15.819687",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "user",
+        "trip_description",
+        "column_break_1",
+        "status",
+        "section_trip",
+        "destination",
+        "purpose",
+        "column_break_2",
+        "customer",
+        "project",
+        "section_dates",
+        "from_date",
+        "departure_time",
+        "column_break_3",
+        "to_date",
+        "return_time",
+        "section_meals",
+        "meals_provided",
+        "section_expenses",
+        "expense_items",
+        "section_totals",
+        "total_amount",
+        "column_break_4",
+        "generated_pdf",
+        "section_integration",
+        "datev_export_status",
+        "amended_from"
+    ],
+    "fields": [
+        {
+            "fieldname": "trip_description",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Reisebeschreibung",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Entwurf",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "Entwurf\nEingereicht\nGenehmigt\nAbgelehnt\nErstattet",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_trip",
+            "fieldtype": "Section Break",
+            "label": "Reisedetails"
+        },
+        {
+            "fieldname": "destination",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Reiseziel",
+            "reqd": 1
+        },
+        {
+            "fieldname": "purpose",
+            "fieldtype": "Select",
+            "label": "Zweck",
+            "options": "Kundenbesuch\nSchulung\nMesse\nSonstiges"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "customer",
+            "fieldtype": "Data",
+            "label": "Kunde"
+        },
+        {
+            "fieldname": "project",
+            "fieldtype": "Data",
+            "label": "Projekt"
+        },
+        {
+            "fieldname": "section_dates",
+            "fieldtype": "Section Break",
+            "label": "Zeitraum"
+        },
+        {
+            "fieldname": "from_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Reisebeginn",
+            "reqd": 1
+        },
+        {
+            "fieldname": "departure_time",
+            "fieldtype": "Time",
+            "label": "Abfahrtszeit"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "to_date",
+            "fieldtype": "Date",
+            "label": "Reiseende",
+            "reqd": 1
+        },
+        {
+            "fieldname": "return_time",
+            "fieldtype": "Time",
+            "label": "R\u00fcckkehrzeit"
+        },
+        {
+            "fieldname": "section_meals",
+            "fieldtype": "Section Break",
+            "label": "Mahlzeiten"
+        },
+        {
+            "fieldname": "meals_provided",
+            "fieldtype": "Table",
+            "label": "Gestellte Mahlzeiten",
+            "options": "Intranet Travel Meal"
+        },
+        {
+            "fieldname": "section_expenses",
+            "fieldtype": "Section Break",
+            "label": "Kosten"
+        },
+        {
+            "fieldname": "expense_items",
+            "fieldtype": "Table",
+            "label": "Kostenposten",
+            "options": "Intranet Expense Item"
+        },
+        {
+            "fieldname": "section_totals",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "total_amount",
+            "fieldtype": "Currency",
+            "label": "Gesamtbetrag",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "generated_pdf",
+            "fieldtype": "Attach",
+            "label": "Generiertes PDF",
+            "read_only": 1
+        },
+        {
+            "collapsible": 1,
+            "fieldname": "section_integration",
+            "fieldtype": "Section Break",
+            "label": "DATEV Export"
+        },
+        {
+            "default": "Nicht exportiert",
+            "fieldname": "datev_export_status",
+            "fieldtype": "Select",
+            "label": "DATEV Export Status",
+            "options": "Nicht exportiert\nExportiert\nFehler",
+            "read_only": 1
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Intranet Travel Expense",
+            "print_hide": 1,
+            "read_only": 1,
+            "search_index": 1
+        },
+        {
+            "fieldname": "user",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Mitarbeiter",
+            "options": "User",
+            "reqd": 1
+        }
+    ],
+    "grid_page_length": 50,
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2026-02-15 21:35:00.000000",
+    "modified_by": "Administrator",
+    "module": "Heva Intranet",
+    "name": "Intranet Travel Expense",
+    "naming_rule": "Expression",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "if_owner": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Employee",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "rows_threshold_for_grid_search": 20,
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1
+}

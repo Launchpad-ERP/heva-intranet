@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "EVT-.YYYY.-.#####",
+ "creation": "2026-02-06 23:48:16.076442",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "event_type",
+  "column_break_1",
+  "organizer",
+  "customer",
+  "section_datetime",
+  "start_datetime",
+  "end_datetime",
+  "column_break_2",
+  "is_all_day",
+  "location",
+  "section_description",
+  "description",
+  "section_attendees",
+  "attendees",
+  "section_outlook",
+  "outlook_event_id",
+  "outlook_sync_status",
+  "reminder_sent"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Eventtitel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "label": "Eventtyp",
+   "options": "Kundenevent\nFirmenevent\nMesse\nSchulung\nFeier"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "__user",
+   "fieldname": "organizer",
+   "fieldtype": "Link",
+   "label": "Organisator",
+   "options": "User"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Kunde",
+   "options": "Intranet Customer"
+  },
+  {
+   "fieldname": "section_datetime",
+   "fieldtype": "Section Break",
+   "label": "Zeitraum"
+  },
+  {
+   "fieldname": "start_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Start",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_datetime",
+   "fieldtype": "Datetime",
+   "label": "Ende"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_all_day",
+   "fieldtype": "Check",
+   "label": "Ganzt\u00e4gig"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Ort"
+  },
+  {
+   "fieldname": "section_description",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Beschreibung"
+  },
+  {
+   "fieldname": "section_attendees",
+   "fieldtype": "Section Break",
+   "label": "Teilnehmer"
+  },
+  {
+   "fieldname": "attendees",
+   "fieldtype": "Table",
+   "label": "Teilnehmer",
+   "options": "Intranet Event Attendee"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_outlook",
+   "fieldtype": "Section Break",
+   "label": "Outlook Integration"
+  },
+  {
+   "fieldname": "outlook_event_id",
+   "fieldtype": "Data",
+   "label": "Outlook Event ID",
+   "read_only": 1
+  },
+  {
+   "default": "Nicht synchronisiert",
+   "fieldname": "outlook_sync_status",
+   "fieldtype": "Select",
+   "label": "Sync Status",
+   "options": "Nicht synchronisiert\nSynchronisiert\nFehler",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "reminder_sent",
+   "fieldtype": "Check",
+   "label": "Erinnerung gesendet",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-02-06 23:48:16.076442",
+ "modified_by": "Administrator",
+ "module": "Heva Intranet",
+ "name": "Intranet Event",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "start_datetime",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

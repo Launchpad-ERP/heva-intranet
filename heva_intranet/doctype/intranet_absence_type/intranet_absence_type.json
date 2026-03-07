@@ -1,0 +1,63 @@
+{
+    "name": "Intranet Absence Type",
+    "module": "Heva Intranet",
+    "doctype": "DocType",
+    "is_submittable": 0,
+    "istable": 0,
+    "quick_entry": 1,
+    "track_changes": 1,
+    "fields": [
+        {
+            "fieldname": "type_name",
+            "fieldtype": "Data",
+            "label": "Abwesenheitsart",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "requires_approval",
+            "fieldtype": "Check",
+            "label": "Genehmigung erforderlich",
+            "default": "1"
+        },
+        {
+            "fieldname": "requires_certificate",
+            "fieldtype": "Check",
+            "label": "Bescheinigung erforderlich"
+        },
+        {
+            "fieldname": "max_days_per_year",
+            "fieldtype": "Int",
+            "label": "Max. Tage pro Jahr"
+        },
+        {
+            "fieldname": "color",
+            "fieldtype": "Color",
+            "label": "Farbe"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1
+        },
+        {
+            "role": "HR Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1
+        },
+        {
+            "role": "Employee",
+            "read": 1
+        }
+    ],
+    "naming_rule": "By fieldname",
+    "autoname": "field:type_name",
+    "sort_field": "type_name",
+    "sort_order": "ASC"
+}

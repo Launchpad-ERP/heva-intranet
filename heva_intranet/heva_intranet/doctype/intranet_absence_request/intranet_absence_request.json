@@ -1,0 +1,216 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "ABW-.YYYY.-.#####",
+    "creation": "2026-02-06 23:48:15.750226",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "user",
+        "absence_type",
+        "column_break_1",
+        "status",
+        "section_dates",
+        "from_date",
+        "to_date",
+        "column_break_2",
+        "half_day",
+        "half_day_date",
+        "section_details",
+        "reason",
+        "substitute",
+        "column_break_3",
+        "approver",
+        "medical_certificate",
+        "section_integration",
+        "datev_sync_status",
+        "outlook_event_id",
+        "amended_from"
+    ],
+    "fields": [
+        {
+            "fieldname": "user",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Benutzer",
+            "options": "User",
+            "reqd": 1
+        },
+        {
+            "fieldname": "absence_type",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Abwesenheitsart",
+            "options": "Intranet Absence Type",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Entwurf",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "Entwurf\nEingereicht\nGenehmigt\nAbgelehnt",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_dates",
+            "fieldtype": "Section Break",
+            "label": "Zeitraum"
+        },
+        {
+            "fieldname": "from_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Von",
+            "reqd": 1
+        },
+        {
+            "fieldname": "to_date",
+            "fieldtype": "Date",
+            "in_list_view": 1,
+            "label": "Bis",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "0",
+            "fieldname": "half_day",
+            "fieldtype": "Check",
+            "label": "Halber Tag"
+        },
+        {
+            "depends_on": "eval:doc.half_day",
+            "fieldname": "half_day_date",
+            "fieldtype": "Date",
+            "label": "Datum halber Tag"
+        },
+        {
+            "fieldname": "section_details",
+            "fieldtype": "Section Break",
+            "label": "Details"
+        },
+        {
+            "fieldname": "reason",
+            "fieldtype": "Small Text",
+            "label": "Begr\u00fcndung"
+        },
+        {
+            "fieldname": "substitute",
+            "fieldtype": "Link",
+            "label": "Vertretung",
+            "options": "Intranet Employee"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "approver",
+            "fieldtype": "Link",
+            "label": "Genehmiger",
+            "options": "User"
+        },
+        {
+            "fieldname": "medical_certificate",
+            "fieldtype": "Attach",
+            "label": "Krankmeldung"
+        },
+        {
+            "collapsible": 1,
+            "fieldname": "section_integration",
+            "fieldtype": "Section Break",
+            "label": "Integrationen"
+        },
+        {
+            "default": "Nicht synchronisiert",
+            "fieldname": "datev_sync_status",
+            "fieldtype": "Select",
+            "label": "DATEV Status",
+            "options": "Nicht synchronisiert\nSynchronisiert\nFehler",
+            "read_only": 1
+        },
+        {
+            "fieldname": "outlook_event_id",
+            "fieldtype": "Data",
+            "label": "Outlook Event ID",
+            "read_only": 1
+        },
+        {
+            "fieldname": "amended_from",
+            "fieldtype": "Link",
+            "label": "Amended From",
+            "no_copy": 1,
+            "options": "Intranet Absence Request",
+            "print_hide": 1,
+            "read_only": 1,
+            "search_index": 1
+        }
+    ],
+    "grid_page_length": 50,
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2026-02-06 23:48:15.750226",
+    "modified_by": "Administrator",
+    "module": "Heva Intranet",
+    "name": "Intranet Absence Request",
+    "naming_rule": "Expression",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "cancel": 1,
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "HR Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "if_owner": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Employee",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "rows_threshold_for_grid_search": 20,
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1
+}

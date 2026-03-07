@@ -1,0 +1,40 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Heva Intranet{% endblock %}
+
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="/assets/heva_intranet/frontend/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/heva_intranet/frontend/assets/index.css">
+<style>
+    /* Ensure the app takes full height and hides standard Frappe elements if needed */
+    .web-footer,
+    .navbar,
+    .page-header {
+        display: none !important;
+    }
+
+    body {
+        background-color: #f8fafc;
+    }
+
+    .page-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+</style>
+<script>
+    // Explicitly set csrf_token if not already set by web.html (though it should be)
+    if (!window.csrf_token) {
+        window.csrf_token = "{{ csrf_token }}";
+    }
+</script>
+{% endblock %}
+
+{% block page_content %}
+<div id="root"></div>
+<script type="module" src="/assets/heva_intranet/frontend/assets/index.js?v={{ frappe.utils.now() }}"></script>
+{% endblock %}

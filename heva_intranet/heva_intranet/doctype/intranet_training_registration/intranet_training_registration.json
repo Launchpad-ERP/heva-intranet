@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-02-06 23:48:15.895844",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "training_course",
+  "column_break_1",
+  "status",
+  "registration_date",
+  "section_approval",
+  "manager_approval",
+  "certificate_received",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Mitarbeiter",
+   "options": "Intranet Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "training_course",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Schulung",
+   "options": "Intranet Training Course",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Angemeldet",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Angemeldet\nWarteliste\nGenehmigt\nAbgelehnt\nTeilgenommen\nNicht erschienen"
+  },
+  {
+   "default": "Now",
+   "fieldname": "registration_date",
+   "fieldtype": "Datetime",
+   "label": "Anmeldezeitpunkt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_approval",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "manager_approval",
+   "fieldtype": "Check",
+   "label": "Vorgesetzter genehmigt"
+  },
+  {
+   "default": "0",
+   "fieldname": "certificate_received",
+   "fieldtype": "Check",
+   "label": "Zertifikat erhalten"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Anmerkungen"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-02-06 23:48:15.895844",
+ "modified_by": "Administrator",
+ "module": "Heva Intranet",
+ "name": "Intranet Training Registration",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "registration_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
