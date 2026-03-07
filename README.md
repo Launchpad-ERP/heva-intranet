@@ -31,3 +31,10 @@ Pre-commit is configured to use the following tools for checking and formatting 
 ### License
 
 mit
+
+
+
+-> Excel Export von Stunden und Urlaub
+-> Anfahrt Pauschale abziehen von Stunden am Tag (0,30 Cent pro km)
+-> Admin Oberfläche für alle einstellungen
+-> Vertretung für Urlaub 

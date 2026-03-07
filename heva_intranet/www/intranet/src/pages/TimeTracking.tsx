@@ -291,7 +291,7 @@ export default function TimeTracking() {
                     {format(new Date(), 'EEEE, dd. MMMM yyyy', { locale: de })}
                 </div>
                 <div style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
-                    {isOnBreak ? '☕ Pause' : isWorking ? (todayEntry?.is_onsite ? '📍 Vor Ort' : '🏠 Home Office') : '⏸️ Nicht eingestempelt'}
+                    {isOnBreak ? '☕ Pause' : isWorking ? (todayEntry?.is_onsite ? '📍 Vor Ort' : '🏠 Office') : '⏸️ Nicht eingestempelt'}
                 </div>
 
                 {todayEntry?.clock_in && (
@@ -499,7 +499,7 @@ export default function TimeTracking() {
                                         {format(new Date(entry.date), 'EEE, dd.MM.', { locale: de })}
                                     </div>
                                     <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                        {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Home Office</span>}
+                                        {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Office</span>}
                                         {entry.project && <span>• {entry.project}</span>}
                                         {entry.break_duration != null && entry.break_duration > 0 && (
                                             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
