@@ -12,6 +12,10 @@ export interface TimeEntry {
     break_end?: string;
     break_duration?: number;
     is_onsite?: number;
+    clock_in_lat?: number;
+    clock_in_long?: number;
+    clock_out_lat?: number;
+    clock_out_long?: number;
     working_hours?: number;
     overtime_hours?: number;
     notes?: string;
@@ -47,7 +51,9 @@ export const timeTrackingApi = {
                 fields: JSON.stringify([
                     'name', 'owner', 'date', 'status', 'project',
                     'clock_in', 'clock_out', 'break_start', 'break_end',
-                    'break_duration', 'is_onsite', 'working_hours', 'overtime_hours', 'notes'
+                    'break_duration', 'is_onsite',
+                    'clock_in_lat', 'clock_in_long', 'clock_out_lat', 'clock_out_long',
+                    'working_hours', 'overtime_hours', 'notes'
                 ]),
                 filters: JSON.stringify(filters),
                 order_by: 'clock_in desc',
@@ -78,7 +84,14 @@ export const timeTrackingApi = {
         });
     },
 
-    clockIn: (data: { user: string; project?: string; notes?: string; is_onsite?: number }) => {
+    clockIn: (data: {
+        user: string;
+        project?: string;
+        notes?: string;
+        is_onsite?: number;
+        lat?: number;
+        long?: number;
+    }) => {
         const now = new Date();
         const time = now.toTimeString().split(' ')[0];
         const date = now.toISOString().split('T')[0];
@@ -93,6 +106,8 @@ export const timeTrackingApi = {
                     clock_in: time,
                     status: 'Aktiv',
                     is_onsite: data.is_onsite || 0,
+                    clock_in_lat: data.lat,
+                    clock_in_long: data.long,
                     project: data.project,
                     notes: data.notes
                 }
@@ -100,7 +115,7 @@ export const timeTrackingApi = {
         });
     },
 
-    clockOut: (entryName: string) => {
+    clockOut: (entryName: string, lat?: number, long?: number) => {
         const now = new Date();
         const time = now.toTimeString().split(' ')[0];
 
@@ -111,6 +126,8 @@ export const timeTrackingApi = {
                 name: entryName,
                 fieldname: {
                     clock_out: time,
+                    clock_out_lat: lat,
+                    clock_out_long: long,
                     status: 'Abgeschlossen'
                 }
             }

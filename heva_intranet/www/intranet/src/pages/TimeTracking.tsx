@@ -5,6 +5,64 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { AuthContext } from '../context/AuthContext';
 
+declare global {
+    interface Window {
+        L: any;
+    }
+}
+
+function MapView({ lat, long, latOut, longOut }: { lat?: number; long?: number; latOut?: number; longOut?: number }) {
+    const mapId = `map-${lat}-${long}-${latOut || 'none'}`;
+
+    useEffect(() => {
+        if (!window.L || !lat || !long) return;
+
+        const map = window.L.map(mapId).setView([lat, long], 15);
+
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        window.L.marker([lat, long], {
+            icon: window.L.icon({
+                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+            })
+        }).addTo(map).bindPopup('Check-in');
+
+        if (latOut && longOut) {
+            window.L.marker([latOut, longOut], {
+                icon: window.L.icon({
+                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    className: 'marker-out'
+                })
+            }).addTo(map).bindPopup('Check-out');
+
+            // Zoom to fit both
+            const bounds = window.L.latLngBounds([[lat, long], [latOut, longOut]]);
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+
+        return () => map.remove();
+    }, [lat, long, latOut, longOut, mapId]);
+
+    return (
+        <div id={mapId} style={{
+            height: '180px',
+            width: '100%',
+            borderRadius: 'var(--radius-md)',
+            marginTop: '1rem',
+            border: '2px solid rgba(255,255,255,0.2)',
+            zIndex: 1
+        }} />
+    );
+}
+
 export default function TimeTracking() {
     const navigate = useNavigate();
     const authContext = useContext(AuthContext);
@@ -17,6 +75,7 @@ export default function TimeTracking() {
 
     // Edit modal state
     const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
+    const [showMapForEntry, setShowMapForEntry] = useState<string | null>(null);
     const [editForm, setEditForm] = useState({
         clock_in: '',
         clock_out: '',
@@ -28,6 +87,30 @@ export default function TimeTracking() {
     useEffect(() => {
         loadData();
     }, [authContext?.user]);
+
+    async function getCoordinates(): Promise<{ lat?: number; long?: number }> {
+        return new Promise((resolve) => {
+            if (!navigator.geolocation) {
+                console.warn('Geolocation is not supported by this browser.');
+                resolve({});
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    resolve({
+                        lat: position.coords.latitude,
+                        long: position.coords.longitude
+                    });
+                },
+                (error) => {
+                    console.warn('Geolocation error:', error.message);
+                    resolve({});
+                },
+                { timeout: 5000 }
+            );
+        });
+    }
 
     async function loadData() {
         setLoading(true);
@@ -54,10 +137,13 @@ export default function TimeTracking() {
         }
         setActionLoading(true);
         try {
+            const coords = await getCoordinates();
             await timeTrackingApi.clockIn({
                 user: authContext.user.name,
                 project: selectedProject,
-                is_onsite: isOnSite ? 1 : 0
+                is_onsite: isOnSite ? 1 : 0,
+                lat: coords.lat,
+                long: coords.long
             });
             await loadData();
         } catch (e: any) {
@@ -71,7 +157,8 @@ export default function TimeTracking() {
         if (!todayEntry) return;
         setActionLoading(true);
         try {
-            await timeTrackingApi.clockOut(todayEntry.name);
+            const coords = await getCoordinates();
+            await timeTrackingApi.clockOut(todayEntry.name, coords.lat, coords.long);
             await loadData();
         } catch (e: any) {
             alert('Fehler: ' + e.message);
@@ -277,6 +364,10 @@ export default function TimeTracking() {
                     </div>
                 )}
 
+                {isWorking && todayEntry?.clock_in_lat && todayEntry?.clock_in_long && (
+                    <MapView lat={todayEntry.clock_in_lat} long={todayEntry.clock_in_long} />
+                )}
+
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {!isWorking && (
@@ -398,53 +489,77 @@ export default function TimeTracking() {
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Keine Einträge gefunden.</p>
                 ) : (
                     recentEntries.map(entry => (
-                        <div
-                            key={entry.name}
-                            className="card"
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: '0.75rem 1rem'
-                            }}
-                        >
-                            <div>
-                                <div style={{ fontWeight: 500 }}>
-                                    {format(new Date(entry.date), 'EEE, dd.MM.', { locale: de })}
-                                </div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                    {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Home Office</span>}
-                                    {entry.project && <span>• {entry.project}</span>}
-                                    {entry.break_duration != null && entry.break_duration > 0 && (
-                                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            • ☕ {(entry.break_duration * 60).toFixed(0)}min
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 600 }}>
-                                        {entry.working_hours?.toFixed(1) || '–'}h
+                        <div key={entry.name}>
+                            <div
+                                className="card"
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '0.75rem 1rem'
+                                }}
+                            >
+                                <div>
+                                    <div style={{ fontWeight: 500 }}>
+                                        {format(new Date(entry.date), 'EEE, dd.MM.', { locale: de })}
                                     </div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                        {entry.clock_in?.slice(0, 5)} - {entry.clock_out?.slice(0, 5) || '...'}
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                        {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Home Office</span>}
+                                        {entry.project && <span>• {entry.project}</span>}
+                                        {entry.break_duration != null && entry.break_duration > 0 && (
+                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                                • ☕ {(entry.break_duration * 60).toFixed(0)}min
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => openEditModal(entry)}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        fontSize: '1.25rem',
-                                        cursor: 'pointer',
-                                        padding: '0.25rem'
-                                    }}
-                                    title="Bearbeiten"
-                                >
-                                    ✏️
-                                </button>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontWeight: 600 }}>
+                                            {entry.working_hours?.toFixed(1) || '–'}h
+                                        </div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                                            {entry.clock_in?.slice(0, 5)} - {entry.clock_out?.slice(0, 5) || '...'}
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowMapForEntry(showMapForEntry === entry.name ? null : entry.name)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            fontSize: '1.25rem',
+                                            cursor: 'pointer',
+                                            padding: '0.25rem'
+                                        }}
+                                        title="Ort anzeigen"
+                                    >
+                                        📍
+                                    </button>
+                                    <button
+                                        onClick={() => openEditModal(entry)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            fontSize: '1.25rem',
+                                            cursor: 'pointer',
+                                            padding: '0.25rem'
+                                        }}
+                                        title="Bearbeiten"
+                                    >
+                                        ✏️
+                                    </button>
+                                </div>
                             </div>
+                            {showMapForEntry === entry.name && (entry.clock_in_lat || entry.clock_out_lat) && (
+                                <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '-0.5rem' }}>
+                                    <MapView
+                                        lat={entry.clock_in_lat}
+                                        long={entry.clock_in_long}
+                                        latOut={entry.clock_out_lat}
+                                        longOut={entry.clock_out_long}
+                                    />
+                                </div>
+                            )}
                         </div>
                     ))
                 )}
@@ -553,7 +668,6 @@ export default function TimeTracking() {
                             <button
                                 type="button"
                                 onClick={() => setEditingEntry(null)}
-                                className="btn"
                                 style={{ flex: 1, backgroundColor: '#e2e8f0', color: 'black', padding: '0.75rem', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}
                             >
                                 Abbrechen
@@ -561,7 +675,6 @@ export default function TimeTracking() {
                             <button
                                 type="button"
                                 onClick={handleEditSave}
-                                className="btn btn-primary"
                                 style={{ flex: 1, backgroundColor: '#10b981', color: 'white', padding: '0.75rem', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}
                                 disabled={actionLoading}
                             >
