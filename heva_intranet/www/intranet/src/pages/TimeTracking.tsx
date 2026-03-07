@@ -47,7 +47,7 @@ export default function TimeTracking() {
         }
     }
 
-    async function handleClockIn() {
+    async function handleClockIn(isOnSite: boolean = false) {
         if (!authContext?.user?.name) {
             alert('Benutzer nicht gefunden. Bitte erneut einloggen.');
             return;
@@ -56,7 +56,8 @@ export default function TimeTracking() {
         try {
             await timeTrackingApi.clockIn({
                 user: authContext.user.name,
-                project: selectedProject
+                project: selectedProject,
+                is_onsite: isOnSite ? 1 : 0
             });
             await loadData();
         } catch (e: any) {
@@ -204,7 +205,7 @@ export default function TimeTracking() {
                     {format(new Date(), 'EEEE, dd. MMMM yyyy', { locale: de })}
                 </div>
                 <div style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
-                    {isOnBreak ? '☕ Pause' : isWorking ? '🟢 Arbeite' : '⏸️ Nicht eingestempelt'}
+                    {isOnBreak ? '☕ Pause' : isWorking ? (todayEntry?.is_onsite ? '📍 Vor Ort' : '🏠 Home Office') : '⏸️ Nicht eingestempelt'}
                 </div>
 
                 {todayEntry?.clock_in && (
@@ -278,7 +279,7 @@ export default function TimeTracking() {
 
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    {!isWorking && !todayEntry?.clock_out && (
+                    {!isWorking && (
                         <>
                             {projects.length > 0 && (
                                 <select
@@ -288,7 +289,8 @@ export default function TimeTracking() {
                                         padding: '0.75rem',
                                         borderRadius: 'var(--radius-md)',
                                         border: 'none',
-                                        flex: 1
+                                        flex: 2,
+                                        minWidth: '150px'
                                     }}
                                 >
                                     <option value="">Kein Projekt</option>
@@ -297,21 +299,40 @@ export default function TimeTracking() {
                                     ))}
                                 </select>
                             )}
-                            <button
-                                onClick={handleClockIn}
-                                disabled={actionLoading}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    borderRadius: 'var(--radius-md)',
-                                    border: 'none',
-                                    backgroundColor: 'white',
-                                    color: '#10b981',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                ▶ Einstempeln
-                            </button>
+                            <div style={{ display: 'flex', gap: '0.5rem', flex: 3 }}>
+                                <button
+                                    onClick={() => handleClockIn(false)}
+                                    disabled={actionLoading}
+                                    style={{
+                                        padding: '0.75rem 1rem',
+                                        borderRadius: 'var(--radius-md)',
+                                        border: 'none',
+                                        backgroundColor: 'white',
+                                        color: '#6366f1',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                        flex: 1
+                                    }}
+                                >
+                                    🏠 Stempeln
+                                </button>
+                                <button
+                                    onClick={() => handleClockIn(true)}
+                                    disabled={actionLoading}
+                                    style={{
+                                        padding: '0.75rem 1rem',
+                                        borderRadius: 'var(--radius-md)',
+                                        border: 'none',
+                                        backgroundColor: 'white',
+                                        color: '#10b981',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                        flex: 1
+                                    }}
+                                >
+                                    📍 Vor Ort
+                                </button>
+                            </div>
                         </>
                     )}
 
@@ -392,10 +413,11 @@ export default function TimeTracking() {
                                     {format(new Date(entry.date), 'EEE, dd.MM.', { locale: de })}
                                 </div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                    {entry.project && <span>{entry.project}</span>}
+                                    {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Home Office</span>}
+                                    {entry.project && <span>• {entry.project}</span>}
                                     {entry.break_duration != null && entry.break_duration > 0 && (
                                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                            ☕ {(entry.break_duration * 60).toFixed(0)}min
+                                            • ☕ {(entry.break_duration * 60).toFixed(0)}min
                                         </span>
                                     )}
                                 </div>

@@ -11,6 +11,7 @@ export interface TimeEntry {
     break_start?: string;
     break_end?: string;
     break_duration?: number;
+    is_onsite?: number;
     working_hours?: number;
     overtime_hours?: number;
     notes?: string;
@@ -46,9 +47,10 @@ export const timeTrackingApi = {
                 fields: JSON.stringify([
                     'name', 'owner', 'date', 'status', 'project',
                     'clock_in', 'clock_out', 'break_start', 'break_end',
-                    'break_duration', 'working_hours', 'overtime_hours', 'notes'
+                    'break_duration', 'is_onsite', 'working_hours', 'overtime_hours', 'notes'
                 ]),
                 filters: JSON.stringify(filters),
+                order_by: 'clock_in desc',
                 limit_page_length: '1'
             }
         });
@@ -64,7 +66,7 @@ export const timeTrackingApi = {
                 doctype: 'Intranet Time Entry',
                 fields: JSON.stringify([
                     'name', 'date', 'status', 'project',
-                    'clock_in', 'clock_out', 'break_duration', 'notes',
+                    'clock_in', 'clock_out', 'break_duration', 'is_onsite', 'notes',
                     'working_hours', 'overtime_hours'
                 ]),
                 filters: JSON.stringify([
@@ -76,7 +78,7 @@ export const timeTrackingApi = {
         });
     },
 
-    clockIn: (data: { user: string; project?: string; notes?: string }) => {
+    clockIn: (data: { user: string; project?: string; notes?: string; is_onsite?: number }) => {
         const now = new Date();
         const time = now.toTimeString().split(' ')[0];
         const date = now.toISOString().split('T')[0];
@@ -90,6 +92,7 @@ export const timeTrackingApi = {
                     date,
                     clock_in: time,
                     status: 'Aktiv',
+                    is_onsite: data.is_onsite || 0,
                     project: data.project,
                     notes: data.notes
                 }
