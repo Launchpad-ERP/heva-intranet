@@ -91,7 +91,11 @@ export default function TimeTracking() {
         }
         setActionLoading(true);
         try {
-            const coords = await getCoordinates();
+            let coords: { lat?: number; long?: number } = {};
+            if (isOnSite) {
+                coords = await getCoordinates();
+            }
+
             await timeTrackingApi.clockIn({
                 user: authContext.user.name,
                 project: selectedProject,
@@ -111,7 +115,11 @@ export default function TimeTracking() {
         if (!todayEntry) return;
         setActionLoading(true);
         try {
-            const coords = await getCoordinates();
+            let coords: { lat?: number; long?: number } = {};
+            if (todayEntry.is_onsite) {
+                coords = await getCoordinates();
+            }
+
             await timeTrackingApi.clockOut(todayEntry.name, coords.lat, coords.long);
             await loadData();
         } catch (e: any) {
