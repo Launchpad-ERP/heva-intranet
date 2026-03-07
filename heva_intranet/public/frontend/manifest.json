@@ -10,17 +10,22 @@
     "theme_color": "#2563eb",
     "icons": [
         {
-            "src": "/assets/heva_intranet/frontend/icon-192.png",
+            "src": "logo.png",
+            "sizes": "1000x283",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/assets/heva_intranet/frontend/icon-512.png",
+            "src": "icon-512.png",
             "sizes": "512x512",
             "type": "image/png"
         },
         {
-            "src": "/assets/heva_intranet/frontend/icon-512.png",
+            "src": "icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
