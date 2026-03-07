@@ -11,57 +11,7 @@ declare global {
     }
 }
 
-function MapView({ lat, long, latOut, longOut }: { lat?: number; long?: number; latOut?: number; longOut?: number }) {
-    const mapId = `map-${lat}-${long}-${latOut || 'none'}`;
-
-    useEffect(() => {
-        if (!window.L || !lat || !long) return;
-
-        const map = window.L.map(mapId).setView([lat, long], 15);
-
-        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        window.L.marker([lat, long], {
-            icon: window.L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41]
-            })
-        }).addTo(map).bindPopup('Check-in');
-
-        if (latOut && longOut) {
-            window.L.marker([latOut, longOut], {
-                icon: window.L.icon({
-                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    className: 'marker-out'
-                })
-            }).addTo(map).bindPopup('Check-out');
-
-            // Zoom to fit both
-            const bounds = window.L.latLngBounds([[lat, long], [latOut, longOut]]);
-            map.fitBounds(bounds, { padding: [50, 50] });
-        }
-
-        return () => map.remove();
-    }, [lat, long, latOut, longOut, mapId]);
-
-    return (
-        <div id={mapId} style={{
-            height: '180px',
-            width: '100%',
-            borderRadius: 'var(--radius-md)',
-            marginTop: '1rem',
-            border: '2px solid rgba(255,255,255,0.2)',
-            zIndex: 1
-        }} />
-    );
-}
+// TimeTracking Page
 
 export default function TimeTracking() {
     const navigate = useNavigate();
@@ -72,10 +22,10 @@ export default function TimeTracking() {
     const [selectedProject, setSelectedProject] = useState<string>('');
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
+    const [isGpsLoading, setIsGpsLoading] = useState(false);
 
     // Edit modal state
     const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
-    const [showMapForEntry, setShowMapForEntry] = useState<string | null>(null);
     const [editForm, setEditForm] = useState({
         clock_in: '',
         clock_out: '',
@@ -89,15 +39,18 @@ export default function TimeTracking() {
     }, [authContext?.user]);
 
     async function getCoordinates(): Promise<{ lat?: number; long?: number }> {
+        setIsGpsLoading(true);
         return new Promise((resolve) => {
             if (!navigator.geolocation) {
                 console.warn('Geolocation is not supported by this browser.');
+                setIsGpsLoading(false);
                 resolve({});
                 return;
             }
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
+                    setIsGpsLoading(false);
                     resolve({
                         lat: position.coords.latitude,
                         long: position.coords.longitude
@@ -105,9 +58,10 @@ export default function TimeTracking() {
                 },
                 (error) => {
                     console.warn('Geolocation error:', error.message);
+                    setIsGpsLoading(false);
                     resolve({});
                 },
-                { timeout: 5000 }
+                { timeout: 7000, enableHighAccuracy: true }
             );
         });
     }
@@ -269,6 +223,43 @@ export default function TimeTracking() {
 
     return (
         <div style={{ padding: '1rem', paddingBottom: '2rem' }}>
+            {/* GPS Loading Overlay */}
+            {isGpsLoading && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2000,
+                    backdropFilter: 'blur(4px)'
+                }}>
+                    <div className="card" style={{
+                        padding: '2rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        maxWidth: '280px'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            animation: 'pulse 1.5s infinite'
+                        }}>📍</div>
+                        <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>Standort wird ermittelt...</div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                            Bitte habe einen Moment Geduld, während wir deine Position erfassen.
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <button
@@ -362,10 +353,6 @@ export default function TimeTracking() {
                             </div>
                         )}
                     </div>
-                )}
-
-                {isWorking && todayEntry?.clock_in_lat && todayEntry?.clock_in_long && (
-                    <MapView lat={todayEntry.clock_in_lat} long={todayEntry.clock_in_long} />
                 )}
 
                 {/* Action Buttons */}
@@ -523,19 +510,6 @@ export default function TimeTracking() {
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => setShowMapForEntry(showMapForEntry === entry.name ? null : entry.name)}
-                                        style={{
-                                            background: 'none',
-                                            border: 'none',
-                                            fontSize: '1.25rem',
-                                            cursor: 'pointer',
-                                            padding: '0.25rem'
-                                        }}
-                                        title="Ort anzeigen"
-                                    >
-                                        📍
-                                    </button>
-                                    <button
                                         onClick={() => openEditModal(entry)}
                                         style={{
                                             background: 'none',
@@ -550,16 +524,6 @@ export default function TimeTracking() {
                                     </button>
                                 </div>
                             </div>
-                            {showMapForEntry === entry.name && (entry.clock_in_lat || entry.clock_out_lat) && (
-                                <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '-0.5rem' }}>
-                                    <MapView
-                                        lat={entry.clock_in_lat}
-                                        long={entry.clock_in_long}
-                                        latOut={entry.clock_out_lat}
-                                        longOut={entry.clock_out_long}
-                                    />
-                                </div>
-                            )}
                         </div>
                     ))
                 )}

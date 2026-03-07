@@ -6,7 +6,6 @@ export interface User {
     full_name: string;
     email: string;
     image?: string;
-    employee_id?: string;
 }
 
 export const authApi = {
@@ -37,21 +36,5 @@ export const authApi = {
                 doctype: 'User',
                 name: userId
             }
-        }),
-
-    getEmployeeId: async (userId: string) => {
-        try {
-            const result = await api<any>('frappe.client.get_value', {
-                method: 'GET',
-                params: {
-                    doctype: 'Employee',
-                    filters: JSON.stringify({ user_id: userId }),
-                    fieldname: 'name'
-                }
-            });
-            return result?.name || null;
-        } catch (e) {
-            return null;
-        }
-    }
+        })
 };

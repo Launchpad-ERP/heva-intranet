@@ -24,14 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const loggedUser = await authApi.getLoggedUser();
             if (loggedUser && loggedUser !== 'Guest') {
                 try {
-                    const [distinctUser, employeeId] = await Promise.all([
-                        authApi.getCurrentUser(loggedUser),
-                        authApi.getEmployeeId(loggedUser)
-                    ]);
-                    setUser({ ...distinctUser, employee_id: employeeId || undefined });
+                    const distinctUser = await authApi.getCurrentUser(loggedUser);
+                    setUser(distinctUser);
                 } catch (innerError) {
-                    const employeeId = await authApi.getEmployeeId(loggedUser).catch(() => null);
-                    setUser({ name: loggedUser, email: loggedUser, full_name: loggedUser, employee_id: employeeId || undefined });
+                    setUser({ name: loggedUser, email: loggedUser, full_name: loggedUser });
                 }
             } else {
                 setUser(null);
@@ -43,8 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(null);
             }
         } finally {
-            console.log('Auth check finished. User set to:', user); // Note: user state update is async, this log might show old value if relying on state, but here we are in function scope. 
-            // Better to log inside useEffect or before setting
             setIsLoading(false);
         }
     }
