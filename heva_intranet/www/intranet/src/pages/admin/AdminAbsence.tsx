@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { adminApi } from '../../api/admin';
 import { type AbsenceRequest } from '../../api/admin';
 import { exportToExcel } from '../../utils/exportUtils';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, differenceInCalendarDays } from 'date-fns';
 
 export default function AdminAbsence() {
     const [requests, setRequests] = useState<AbsenceRequest[]>([]);
@@ -47,7 +47,7 @@ export default function AdminAbsence() {
             'Typ': r.absence_type || '',
             'Von': r.from_date || '',
             'Bis': r.to_date || '',
-            'Tage': r.total_days || 0,
+            'Tage': (r.from_date && r.to_date) ? differenceInCalendarDays(parseISO(r.to_date), parseISO(r.from_date)) + 1 : 0,
             'Status': r.status,
             'Grund': r.reason || '',
             'Vertretung': r.substitute || ''
@@ -109,6 +109,7 @@ export default function AdminAbsence() {
                             <th style={{ padding: '1rem' }}>Benutzer</th>
                             <th style={{ padding: '1rem' }}>Zeitraum</th>
                             <th style={{ padding: '1rem' }}>Typ</th>
+                            <th style={{ padding: '1rem' }}>Vertretung</th>
                             <th style={{ padding: '1rem' }}>Status</th>
                             <th style={{ padding: '1rem', textAlign: 'right' }}>Aktionen</th>
                         </tr>
@@ -128,6 +129,7 @@ export default function AdminAbsence() {
                                     {format(parseISO(req.from_date || ''), 'dd.MM')} - {format(parseISO(req.to_date || ''), 'dd.MM.yyyy')}
                                 </td>
                                 <td style={{ padding: '1rem' }}>{req.absence_type}</td>
+                                <td style={{ padding: '1rem' }}>{req.substitute || '-'}</td>
                                 <td style={{ padding: '1rem' }}>
                                     <span style={{
                                         padding: '0.25rem 0.5rem',
@@ -139,7 +141,7 @@ export default function AdminAbsence() {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                    {(req.status === 'Eingereicht') && (
+                                    {((req.status as any) === 'Eingereicht' || (req.status as any) === 'Entwurf' || (req.status as any) === 'Pending' || (req.status as any) === 'Submitted') && (
                                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                                             <button
                                                 className="btn"

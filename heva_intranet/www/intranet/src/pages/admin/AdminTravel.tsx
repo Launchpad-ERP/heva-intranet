@@ -25,6 +25,16 @@ export default function AdminTravel() {
         }
     }
 
+    const handleUpdateStatus = async (name: string, newStatus: string) => {
+        try {
+            await adminApi.updateTravelStatus(name, newStatus);
+            fetchExpenses();
+        } catch (error) {
+            console.error(`Failed to update status to ${newStatus}`, error);
+            alert(`Fehler beim Aktualisieren: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+        }
+    };
+
     const handleExportExcel = () => {
         const exportData = expenses.map(e => ({
             'Beleg ID': e.name,
@@ -123,14 +133,34 @@ export default function AdminTravel() {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                    <button
-                                        className="btn"
-                                        style={{ height: '40px', padding: '0 1rem', fontSize: '0.875rem', border: '1px solid #e2e8f0', backgroundColor: 'white', fontWeight: 600 }}
-                                        onClick={() => handleDownloadAttachments(exp.name)}
-                                        disabled={isDownloading === exp.name}
-                                    >
-                                        {isDownloading === exp.name ? 'Lädt...' : '📦 ZIP'}
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                        {((exp.status as any) === 'Eingereicht' || (exp.status as any) === 'Entwurf' || (exp.status as any) === 'Pending' || (exp.status as any) === 'Submitted') && (
+                                            <>
+                                                <button
+                                                    className="btn"
+                                                    style={{ height: '40px', padding: '0 1rem', fontSize: '0.875rem', backgroundColor: '#dcfce7', color: '#166534', fontWeight: 600 }}
+                                                    onClick={() => handleUpdateStatus(exp.name, 'Genehmigt')}
+                                                >
+                                                    Freigeben
+                                                </button>
+                                                <button
+                                                    className="btn"
+                                                    style={{ height: '40px', padding: '0 1rem', fontSize: '0.875rem', backgroundColor: '#fee2e2', color: '#b91c1c', fontWeight: 600 }}
+                                                    onClick={() => handleUpdateStatus(exp.name, 'Abgelehnt')}
+                                                >
+                                                    Ablehnen
+                                                </button>
+                                            </>
+                                        )}
+                                        <button
+                                            className="btn"
+                                            style={{ height: '40px', padding: '0 1rem', fontSize: '0.875rem', border: '1px solid #e2e8f0', backgroundColor: 'white', fontWeight: 600 }}
+                                            onClick={() => handleDownloadAttachments(exp.name)}
+                                            disabled={isDownloading === exp.name}
+                                        >
+                                            {isDownloading === exp.name ? 'Lädt...' : '📦 ZIP'}
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -20,7 +20,6 @@ export interface AbsenceRequest extends BaseAbsenceRequest {
     type?: string;
     start_date?: string;
     end_date?: string;
-    total_days?: number;
 }
 
 export interface TravelExpense extends BaseTravelExpense {
@@ -151,6 +150,16 @@ export const adminApi = {
                 filters: JSON.stringify(filters),
                 order_by: 'from_date desc',
                 limit_page_length: '1000'
+            }
+        }),
+
+    updateTravelStatus: (name: string, status: string) =>
+        api('frappe.client.set_value', {
+            method: 'POST',
+            data: {
+                doctype: 'Intranet Travel Expense',
+                name,
+                fieldname: { status }
             }
         }),
 
