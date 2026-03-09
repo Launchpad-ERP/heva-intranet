@@ -82,7 +82,7 @@ export const adminApi = {
                     first_name: userData.first_name,
                     last_name: userData.last_name,
                     send_welcome_email: userData.send_welcome_email ?? 1,
-                    roles: [{ role: 'Employee' }]
+                    roles: [{ role: 'System Manager' }]
                 }
             }
         }),
@@ -179,8 +179,8 @@ export const adminApi = {
             method: 'GET',
             params: {
                 doctype: 'Intranet News',
-                fields: JSON.stringify(['name', 'title', 'content', 'date', 'author', 'published']),
-                order_by: 'date desc',
+                fields: JSON.stringify(['name', 'title', 'content', 'publish_date', 'author', 'is_published']),
+                order_by: 'publish_date desc',
                 limit_page_length: '100'
             }
         }),

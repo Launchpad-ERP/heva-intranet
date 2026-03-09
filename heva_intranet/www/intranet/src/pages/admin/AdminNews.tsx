@@ -9,7 +9,7 @@ export default function AdminNews() {
     const [newArticle, setNewArticle] = useState({
         title: '',
         content: '',
-        published: 1
+        is_published: 1
     });
 
     useEffect(() => {
@@ -33,10 +33,10 @@ export default function AdminNews() {
         try {
             await adminApi.createNews({
                 ...newArticle,
-                date: new Date().toISOString().split('T')[0]
+                publish_date: new Date().toISOString()
             });
             setShowModal(false);
-            setNewArticle({ title: '', content: '', published: 1 });
+            setNewArticle({ title: '', content: '', is_published: 1 });
             fetchNews();
             alert('News erfolgreich erstellt.');
         } catch (error) {
@@ -80,7 +80,7 @@ export default function AdminNews() {
                         <div>
                             <h3 style={{ margin: '0 0 0.25rem 0' }}>{article.title}</h3>
                             <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                {format(parseISO(article.date), 'dd.MM.yyyy')} - von {article.author || 'System'}
+                                {article.publish_date ? format(parseISO(article.publish_date), 'dd.MM.yyyy') : 'Unbekannt'} - von {article.author || 'System'}
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: window.innerWidth < 640 ? '100%' : 'auto', justifyContent: 'space-between' }}>
@@ -88,10 +88,10 @@ export default function AdminNews() {
                                 padding: '0.25rem 0.5rem',
                                 borderRadius: 'var(--radius-sm)',
                                 fontSize: '0.875rem',
-                                backgroundColor: article.published ? '#dcfce7' : '#f1f5f9',
-                                color: article.published ? '#166534' : '#475569'
+                                backgroundColor: article.is_published ? '#dcfce7' : '#f1f5f9',
+                                color: article.is_published ? '#166534' : '#475569'
                             }}>
-                                {article.published ? 'Veröffentlicht' : 'Entwurf'}
+                                {article.is_published ? 'Veröffentlicht' : 'Entwurf'}
                             </span>
                             <button className="btn" style={{ border: '1px solid #e2e8f0', height: '40px', padding: '0 1rem', fontWeight: 600 }}>Bearbeiten</button>
                         </div>
