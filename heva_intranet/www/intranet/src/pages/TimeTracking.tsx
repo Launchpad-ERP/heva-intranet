@@ -230,7 +230,7 @@ export default function TimeTracking() {
     }
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '2rem' }}>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '3rem' }}>
             {/* GPS Loading Overlay */}
             {isGpsLoading && (
                 <div style={{
@@ -269,14 +269,28 @@ export default function TimeTracking() {
             )}
 
             {/* Header */}
-            <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '1.5rem',
+                gap: '0.25rem',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(8px)',
+                padding: '0.5rem 0',
+                margin: '0 -0.75rem 1.5rem -0.75rem',
+                paddingLeft: '0.75rem'
+            }}>
                 <button
                     onClick={() => navigate('/')}
-                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem', cursor: 'pointer' }}
+                    className="btn"
+                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
                 >
                     ←
                 </button>
-                <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Zeiterfassung</h1>
+                <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.25rem' : '1.5rem', fontWeight: 800 }}>Zeiterfassung</h1>
             </header>
 
             {/* Today's Status Card */}
@@ -285,29 +299,35 @@ export default function TimeTracking() {
                 background: isWorking
                     ? (isOnBreak ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #10b981, #059669)')
                     : 'linear-gradient(135deg, #6366f1, #4f46e5)',
-                color: 'white'
+                color: 'white',
+                padding: window.innerWidth < 640 ? '1rem' : '1.5rem'
             }}>
                 <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem' }}>
                     {format(new Date(), 'EEEE, dd. MMMM yyyy', { locale: de })}
                 </div>
-                <div style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
+                <div style={{ fontSize: window.innerWidth < 640 ? '1.5rem' : '2rem', fontWeight: 700, marginBottom: '1rem' }}>
                     {isOnBreak ? '☕ Pause' : isWorking ? (todayEntry?.is_onsite ? '📍 Vor Ort' : '🏠 Office') : '⏸️ Nicht eingestempelt'}
                 </div>
 
                 {todayEntry?.clock_in && (
-                    <div style={{ display: 'flex', gap: '2rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                        <div>
+                    <div style={{
+                        display: 'flex',
+                        gap: window.innerWidth < 640 ? '1rem' : '2rem',
+                        marginBottom: '1.5rem',
+                        flexWrap: 'wrap'
+                    }}>
+                        <div style={{ flex: '1 1 100px' }}>
                             <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Beginn</div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{todayEntry.clock_in?.slice(0, 5)}</div>
                         </div>
                         {todayEntry.clock_out && (
-                            <div>
+                            <div style={{ flex: '1 1 100px' }}>
                                 <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Ende</div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{todayEntry.clock_out?.slice(0, 5)}</div>
                             </div>
                         )}
                         {todayEntry.working_hours != null && (
-                            <div>
+                            <div style={{ flex: '1 1 100px' }}>
                                 <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Stunden</div>
                                 <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>{todayEntry.working_hours.toFixed(1)}h</div>
                             </div>
@@ -364,19 +384,22 @@ export default function TimeTracking() {
                 )}
 
                 {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', width: '100%' }}>
                     {!isWorking && (
                         <>
                             {projects.length > 0 && (
                                 <select
+                                    className="btn"
                                     value={selectedProject}
                                     onChange={e => setSelectedProject(e.target.value)}
                                     style={{
-                                        padding: '0.75rem',
+                                        height: '48px',
                                         borderRadius: 'var(--radius-md)',
                                         border: 'none',
-                                        flex: 2,
-                                        minWidth: '150px'
+                                        flex: '1 1 100%',
+                                        backgroundColor: 'white',
+                                        color: 'var(--text-color)',
+                                        textAlign: 'left'
                                     }}
                                 >
                                     <option value="">Kein Projekt</option>
@@ -385,33 +408,33 @@ export default function TimeTracking() {
                                     ))}
                                 </select>
                             )}
-                            <div style={{ display: 'flex', gap: '0.5rem', flex: 3 }}>
+                            <div style={{ display: 'flex', gap: '0.75rem', width: '100%', flexDirection: window.innerWidth < 480 ? 'column' : 'row' }}>
                                 <button
                                     onClick={() => handleClockIn(false)}
                                     disabled={actionLoading}
                                     style={{
-                                        padding: '0.75rem 1rem',
+                                        height: '48px',
                                         borderRadius: 'var(--radius-md)',
                                         border: 'none',
                                         backgroundColor: 'white',
                                         color: '#6366f1',
-                                        fontWeight: 600,
+                                        fontWeight: 700,
                                         cursor: 'pointer',
                                         flex: 1
                                     }}
                                 >
-                                    🏠 Stempeln
+                                    🏠 Office
                                 </button>
                                 <button
                                     onClick={() => handleClockIn(true)}
                                     disabled={actionLoading}
                                     style={{
-                                        padding: '0.75rem 1rem',
+                                        height: '48px',
                                         borderRadius: 'var(--radius-md)',
                                         border: 'none',
                                         backgroundColor: 'white',
                                         color: '#10b981',
-                                        fontWeight: 600,
+                                        fontWeight: 700,
                                         cursor: 'pointer',
                                         flex: 1
                                     }}
@@ -423,18 +446,19 @@ export default function TimeTracking() {
                     )}
 
                     {isWorking && !isOnBreak && (
-                        <>
+                        <div style={{ display: 'flex', gap: '0.75rem', width: '100%', flexDirection: window.innerWidth < 480 ? 'column' : 'row' }}>
                             <button
                                 onClick={handleBreakStart}
                                 disabled={actionLoading}
                                 style={{
-                                    padding: '0.75rem 1.5rem',
+                                    height: '48px',
                                     borderRadius: 'var(--radius-md)',
                                     border: '2px solid white',
                                     backgroundColor: 'transparent',
                                     color: 'white',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    flex: 1
                                 }}
                             >
                                 ☕ Pause
@@ -443,18 +467,19 @@ export default function TimeTracking() {
                                 onClick={handleClockOut}
                                 disabled={actionLoading}
                                 style={{
-                                    padding: '0.75rem 1.5rem',
+                                    height: '48px',
                                     borderRadius: 'var(--radius-md)',
                                     border: 'none',
                                     backgroundColor: 'white',
                                     color: '#ef4444',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    flex: 1
                                 }}
                             >
                                 ⏹ Ausstempeln
                             </button>
-                        </>
+                        </div>
                     )}
 
                     {isOnBreak && (
@@ -462,12 +487,13 @@ export default function TimeTracking() {
                             onClick={handleBreakEnd}
                             disabled={actionLoading}
                             style={{
-                                padding: '0.75rem 1.5rem',
+                                height: '48px',
+                                width: '100%',
                                 borderRadius: 'var(--radius-md)',
                                 border: 'none',
                                 backgroundColor: 'white',
                                 color: '#10b981',
-                                fontWeight: 600,
+                                fontWeight: 700,
                                 cursor: 'pointer'
                             }}
                         >
@@ -489,28 +515,39 @@ export default function TimeTracking() {
                                 className="card"
                                 style={{
                                     display: 'flex',
+                                    flexDirection: window.innerWidth < 480 ? 'column' : 'row',
                                     justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '0.75rem 1rem'
+                                    alignItems: window.innerWidth < 480 ? 'stretch' : 'center',
+                                    padding: '0.75rem 1rem',
+                                    gap: '1rem'
                                 }}
                             >
-                                <div>
-                                    <div style={{ fontWeight: 500 }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 600, fontSize: '1rem' }}>
                                         {format(new Date(entry.date), 'EEE, dd.MM.', { locale: de })}
                                     </div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                        {entry.is_onsite ? <span>📍 Vor Ort</span> : <span>🏠 Office</span>}
-                                        {entry.project && <span>• {entry.project}</span>}
+                                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                                        <span style={{ backgroundColor: '#f1f5f9', padding: '1px 6px', borderRadius: '4px' }}>
+                                            {entry.is_onsite ? '📍 Vor Ort' : '🏠 Office'}
+                                        </span>
+                                        {entry.project && <span style={{ color: 'var(--primary-color)', fontWeight: 500 }}>• {entry.project}</span>}
                                         {entry.break_duration != null && entry.break_duration > 0 && (
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                            <span>
                                                 • ☕ {(entry.break_duration * 60).toFixed(0)}min
                                             </span>
                                         )}
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontWeight: 600 }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '1rem',
+                                    borderTop: window.innerWidth < 480 ? '1px solid #f1f5f9' : 'none',
+                                    paddingTop: window.innerWidth < 480 ? '0.75rem' : 0
+                                }}>
+                                    <div style={{ textAlign: window.innerWidth < 480 ? 'left' : 'right' }}>
+                                        <div style={{ fontWeight: 700, color: 'var(--text-color)' }}>
                                             {entry.working_hours?.toFixed(1) || '–'}h
                                         </div>
                                         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -519,12 +556,14 @@ export default function TimeTracking() {
                                     </div>
                                     <button
                                         onClick={() => openEditModal(entry)}
+                                        className="btn"
                                         style={{
-                                            background: 'none',
-                                            border: 'none',
-                                            fontSize: '1.25rem',
-                                            cursor: 'pointer',
-                                            padding: '0.25rem'
+                                            background: '#f8fafc',
+                                            border: '1px solid #e2e8f0',
+                                            width: '40px',
+                                            height: '40px',
+                                            padding: 0,
+                                            borderRadius: 'var(--radius-md)'
                                         }}
                                         title="Bearbeiten"
                                     >
@@ -552,55 +591,60 @@ export default function TimeTracking() {
                     zIndex: 1000,
                     padding: '1rem'
                 }}>
-                    <div style={{
-                        backgroundColor: 'var(--surface-color)',
+                    <div className="card" style={{
                         width: '100%',
-                        maxWidth: '400px',
-                        borderRadius: 'var(--radius-lg)',
-                        padding: '1.5rem'
+                        maxWidth: '450px',
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                        padding: window.innerWidth < 640 ? '1.25rem' : '2rem',
+                        position: 'relative'
                     }}>
-                        <h2 style={{ marginTop: 0, marginBottom: '1.5rem' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem' }}>
                             ✏️ Eintrag bearbeiten
                         </h2>
 
-                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexDirection: window.innerWidth < 400 ? 'column' : 'row' }}>
                             <div style={{ flex: 1 }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Beginn</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Beginn</label>
                                 <input
                                     type="time"
+                                    className="btn"
                                     value={editForm.clock_in}
                                     onChange={e => setEditForm({ ...editForm, clock_in: e.target.value })}
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                    style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
                                 />
                             </div>
                             <div style={{ flex: 1 }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Ende</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Ende</label>
                                 <input
                                     type="time"
+                                    className="btn"
                                     value={editForm.clock_out}
                                     onChange={e => setEditForm({ ...editForm, clock_out: e.target.value })}
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                    style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
                                 />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Pause (Minuten)</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Pause (Minuten)</label>
                             <input
                                 type="number"
                                 min="0"
+                                className="btn"
                                 value={editForm.break_duration}
                                 onChange={e => setEditForm({ ...editForm, break_duration: parseInt(e.target.value) || 0 })}
-                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
                             />
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Projekt</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Projekt</label>
                             <select
+                                className="btn"
                                 value={editForm.project}
                                 onChange={e => setEditForm({ ...editForm, project: e.target.value })}
-                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
                             >
                                 <option value="">Kein Projekt</option>
                                 {projects.map(p => (
@@ -610,47 +654,53 @@ export default function TimeTracking() {
                         </div>
 
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Notizen</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 500 }}>Notizen</label>
                             <textarea
+                                className="btn"
                                 value={editForm.notes}
                                 onChange={e => setEditForm({ ...editForm, notes: e.target.value })}
-                                rows={2}
-                                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1', resize: 'vertical' }}
+                                rows={3}
+                                style={{ width: '100%', height: 'auto', minHeight: '80px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left', lineHeight: '1.4' }}
                             />
                         </div>
 
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                            <button
-                                type="button"
-                                onClick={handleDelete}
-                                style={{
-                                    backgroundColor: '#ef4444',
-                                    color: 'white',
-                                    padding: '0.75rem',
-                                    border: 'none',
-                                    borderRadius: 'var(--radius-md)',
-                                    cursor: 'pointer',
-                                    fontSize: '1rem'
-                                }}
-                                disabled={actionLoading}
-                                title="Löschen"
-                            >
-                                🗑️
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setEditingEntry(null)}
-                                style={{ flex: 1, backgroundColor: '#e2e8f0', color: 'black', padding: '0.75rem', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}
-                            >
-                                Abbrechen
-                            </button>
+                        <div style={{ display: 'flex', gap: '0.75rem', flexDirection: window.innerWidth < 480 ? 'column-reverse' : 'row' }}>
+                            <div style={{ display: 'flex', gap: '0.75rem', flex: 1 }}>
+                                <button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    className="btn"
+                                    style={{
+                                        backgroundColor: '#fee2e2',
+                                        color: '#ef4444',
+                                        width: '48px',
+                                        height: '48px',
+                                        padding: 0,
+                                        border: '1px solid #fecaca',
+                                        flexShrink: 0
+                                    }}
+                                    disabled={actionLoading}
+                                    title="Löschen"
+                                >
+                                    🗑️
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEditingEntry(null)}
+                                    className="btn"
+                                    style={{ flex: 1, backgroundColor: '#f1f5f9', color: 'var(--text-color)', height: '48px', border: '1px solid #e2e8f0' }}
+                                >
+                                    Abbruch
+                                </button>
+                            </div>
                             <button
                                 type="button"
                                 onClick={handleEditSave}
-                                style={{ flex: 1, backgroundColor: '#10b981', color: 'white', padding: '0.75rem', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}
+                                className="btn btn-primary"
+                                style={{ flex: 1, height: '48px', fontWeight: 700 }}
                                 disabled={actionLoading}
                             >
-                                {actionLoading ? 'Speichern...' : 'Speichern'}
+                                {actionLoading ? '...' : 'Speichern'}
                             </button>
                         </div>
                     </div>

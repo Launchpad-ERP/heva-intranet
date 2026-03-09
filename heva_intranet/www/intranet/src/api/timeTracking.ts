@@ -30,8 +30,7 @@ export interface Project {
 
 export interface Employee {
     name: string;
-    employee_name: string;
-    user?: string;
+    user: string;
     email?: string;
 }
 

@@ -106,7 +106,7 @@
             "fieldname": "substitute",
             "fieldtype": "Link",
             "label": "Vertretung",
-            "options": "Intranet Employee"
+            "options": "User"
         },
         {
             "fieldname": "column_break_3",

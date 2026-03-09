@@ -180,28 +180,49 @@ export default function TravelExpenseForm() {
     };
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '6rem', maxWidth: '600px', margin: '0 auto' }}>
-            <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem', position: 'sticky', top: 0, background: 'var(--bg-color)', zIndex: 10, padding: '1rem 0' }}>
-                <button onClick={() => navigate('/travel')} style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem', cursor: 'pointer', padding: '0.5rem' }}>←</button>
-                <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>{id ? 'Bericht bearbeiten' : 'Neuer Bericht'}</h1>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '7rem', maxWidth: '700px', margin: '0 auto' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '1.5rem',
+                position: 'sticky',
+                top: 0,
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(8px)',
+                zIndex: 100,
+                padding: '0.75rem 0',
+                margin: window.innerWidth < 640 ? '0 -0.75rem 1.5rem -0.75rem' : '0 0 1.5rem 0',
+                paddingLeft: window.innerWidth < 640 ? '0.75rem' : 0,
+                borderBottom: '1px solid #f1f5f9'
+            }}>
+                <button
+                    onClick={() => navigate('/travel')}
+                    className="btn"
+                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
+                >
+                    ←
+                </button>
+                <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.1rem' : '1.25rem', fontWeight: 700 }}>
+                    {id ? 'Bericht bearbeiten' : 'Neuer Bericht'}
+                </h1>
             </header>
 
             {/* General Section */}
-            <div style={cardStyle}>
-                <h2 style={{ fontSize: '1.1rem', margin: '0 0 1rem 0', fontWeight: 600 }}>Allgemeine Angaben</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="card" style={{ padding: window.innerWidth < 640 ? '1rem' : '1.5rem', marginBottom: '1.25rem' }}>
+                <h2 style={{ fontSize: '1.05rem', margin: '0 0 1.25rem 0', fontWeight: 700, color: 'var(--primary-color)' }}>Allgemeine Angaben</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div>
                         <label style={labelStyle}>Reisebeschreibung *</label>
-                        <input style={inputStyle} value={formData.trip_description} onChange={e => setFormData({ ...formData, trip_description: e.target.value })} placeholder="z.B. Kundenbesuch Berlin" />
+                        <input className="btn" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.trip_description} onChange={e => setFormData({ ...formData, trip_description: e.target.value })} placeholder="z.B. Kundenbesuch Berlin" />
                     </div>
                     <div>
                         <label style={labelStyle}>Reiseziel *</label>
-                        <input style={inputStyle} value={formData.destination} onChange={e => setFormData({ ...formData, destination: e.target.value })} placeholder="Ort / Stadt" />
+                        <input className="btn" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.destination} onChange={e => setFormData({ ...formData, destination: e.target.value })} placeholder="Ort / Stadt" />
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 480 ? '1fr' : '1fr 1fr', gap: '1.25rem' }}>
                         <div>
                             <label style={labelStyle}>Zweck</label>
-                            <select style={inputStyle} value={formData.purpose} onChange={e => setFormData({ ...formData, purpose: e.target.value as any })}>
+                            <select className="btn" style={{ ...inputStyle, height: '48px', backgroundColor: 'white' }} value={formData.purpose} onChange={e => setFormData({ ...formData, purpose: e.target.value as any })}>
                                 <option>Kundenbesuch</option>
                                 <option>Schulung</option>
                                 <option>Messe</option>
@@ -210,43 +231,59 @@ export default function TravelExpenseForm() {
                         </div>
                         <div>
                             <label style={labelStyle}>Status</label>
-                            <div style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>{formData.status}</div>
+                            <div style={{
+                                padding: '0.75rem',
+                                backgroundColor: '#f8fafc',
+                                borderRadius: 'var(--radius-md)',
+                                border: '1px solid #e2e8f0',
+                                fontWeight: 700,
+                                color: 'var(--primary-color)',
+                                height: '48px',
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}>
+                                {formData.status}
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label style={labelStyle}>Kunde (Freitext)</label>
-                        <input style={inputStyle} value={formData.customer || ''} onChange={e => setFormData({ ...formData, customer: e.target.value })} placeholder="Name des Kunden" />
+                        <input className="btn" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.customer || ''} onChange={e => setFormData({ ...formData, customer: e.target.value })} placeholder="Name des Kunden" />
                     </div>
                     <div>
                         <label style={labelStyle}>Projekt (Freitext)</label>
-                        <input style={inputStyle} value={formData.project || ''} onChange={e => setFormData({ ...formData, project: e.target.value })} placeholder="Projektbezeichnung" />
+                        <input className="btn" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.project || ''} onChange={e => setFormData({ ...formData, project: e.target.value })} placeholder="Projektbezeichnung" />
                     </div>
                 </div>
             </div>
 
             {/* Dates */}
-            <div style={cardStyle}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h2 style={{ fontSize: '1.2rem', margin: '0', fontWeight: 600 }}>Reisezeitraum</h2>
-                    <button onClick={() => setShowCalendar(!showCalendar)} style={{
-                        fontSize: '0.95rem',
-                        backgroundColor: showCalendar ? '#f1f5f9' : '#eff6ff',
-                        color: showCalendar ? '#475569' : '#2563eb',
-                        border: showCalendar ? '1px solid #cbd5e1' : '1px solid #bfdbfe',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '2rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                    }}>
-                        {showCalendar ? '🔽 Schließen' : '📅 Kalender öffnen'}
+            <div className="card" style={{ padding: window.innerWidth < 640 ? '1rem' : '1.5rem', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                    <h2 style={{ fontSize: '1.05rem', margin: '0', fontWeight: 700, color: 'var(--primary-color)' }}>Reisezeitraum</h2>
+                    <button
+                        onClick={() => setShowCalendar(!showCalendar)}
+                        className="btn"
+                        style={{
+                            fontSize: '0.8125rem',
+                            backgroundColor: showCalendar ? '#f1f5f9' : '#eff6ff',
+                            color: showCalendar ? '#475569' : '#2563eb',
+                            border: showCalendar ? '1px solid #cbd5e1' : '1px solid #bfdbfe',
+                            padding: '0.5rem 1rem',
+                            borderRadius: 'var(--radius-full)',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem'
+                        }}
+                    >
+                        {showCalendar ? '🔽 Zu' : '📅 Kalender'}
                     </button>
                 </div>
 
                 {showCalendar && (
-                    <div style={{ marginBottom: '1.5rem', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '1rem', backgroundColor: '#fff' }}>
+                    <div style={{ marginBottom: '1.5rem', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '0.5rem', backgroundColor: '#fff' }}>
                         <TouchRangeCalendar
                             startDate={formData.from_date || ''}
                             endDate={formData.to_date || ''}
@@ -255,67 +292,67 @@ export default function TravelExpenseForm() {
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 480 ? '1fr' : '1fr 1fr', gap: '1.25rem' }}>
                     <div>
                         <label style={labelStyle}>Beginn *</label>
-                        <input type="date" style={inputStyle} value={formData.from_date} onChange={e => setFormData({ ...formData, from_date: e.target.value })} />
+                        <input className="btn" type="date" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.from_date} onChange={e => setFormData({ ...formData, from_date: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle}>Ende *</label>
-                        <input type="date" style={inputStyle} value={formData.to_date} onChange={e => setFormData({ ...formData, to_date: e.target.value })} />
+                        <input className="btn" type="date" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.to_date} onChange={e => setFormData({ ...formData, to_date: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle}>Startzeit</label>
-                        <input type="time" style={inputStyle} value={formData.departure_time || ''} onChange={e => setFormData({ ...formData, departure_time: e.target.value })} />
+                        <input className="btn" type="time" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.departure_time || ''} onChange={e => setFormData({ ...formData, departure_time: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle}>Rückkehr</label>
-                        <input type="time" style={inputStyle} value={formData.return_time || ''} onChange={e => setFormData({ ...formData, return_time: e.target.value })} />
+                        <input className="btn" type="time" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={formData.return_time || ''} onChange={e => setFormData({ ...formData, return_time: e.target.value })} />
                     </div>
                 </div>
             </div>
 
             {/* Meals */}
             {formData.meals_provided && formData.meals_provided.length > 0 && (
-                <div style={cardStyle}>
-                    <h2 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem 0', fontWeight: 600 }}>Verpflegung</h2>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+                <div className="card" style={{ padding: window.innerWidth < 640 ? '1rem' : '1.5rem', marginBottom: '1.25rem' }}>
+                    <h2 style={{ fontSize: '1.05rem', margin: '0 0 0.5rem 0', fontWeight: 700, color: 'var(--primary-color)' }}>Verpflegung</h2>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
                         Wurden Mahlzeiten vom Arbeitgeber oder Kunden gestellt? (kostenlos)
                     </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        {formData.meals_provided.map((meal, idx) => (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {formData.meals_provided!.map((meal, idx) => (
                             <div key={meal.date} style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                padding: '0.75rem',
+                                padding: '0.875rem',
                                 backgroundColor: '#f8fafc',
                                 borderRadius: 'var(--radius-md)',
                                 border: '1px solid #e2e8f0'
                             }}>
-                                <div style={{ fontWeight: 500, minWidth: '80px' }}>
+                                <div style={{ fontWeight: 700, minWidth: '80px', fontSize: '0.9rem', color: 'var(--text-color)' }}>
                                     {format(new Date(meal.date), 'dd.MM.')}
                                 </div>
-                                <div style={{ display: 'flex', gap: '1rem' }}>
-                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.2rem' }}>
-                                        <span>Früh</span>
-                                        <input type="checkbox" style={{ transform: 'scale(1.2)' }} checked={!!meal.breakfast_provided} onChange={e => {
+                                <div style={{ display: 'flex', gap: '1.25rem' }}>
+                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.35rem', cursor: 'pointer' }}>
+                                        <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>F</span>
+                                        <input type="checkbox" style={{ width: '20px', height: '20px' }} checked={!!meal.breakfast_provided} onChange={e => {
                                             const newMeals = [...formData.meals_provided!];
                                             newMeals[idx].breakfast_provided = e.target.checked ? 1 : 0;
                                             setFormData({ ...formData, meals_provided: newMeals });
                                         }} />
                                     </label>
-                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.2rem' }}>
-                                        <span>Mit</span>
-                                        <input type="checkbox" style={{ transform: 'scale(1.2)' }} checked={!!meal.lunch_provided} onChange={e => {
+                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.35rem', cursor: 'pointer' }}>
+                                        <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>M</span>
+                                        <input type="checkbox" style={{ width: '20px', height: '20px' }} checked={!!meal.lunch_provided} onChange={e => {
                                             const newMeals = [...formData.meals_provided!];
                                             newMeals[idx].lunch_provided = e.target.checked ? 1 : 0;
                                             setFormData({ ...formData, meals_provided: newMeals });
                                         }} />
                                     </label>
-                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.2rem' }}>
-                                        <span>Abd</span>
-                                        <input type="checkbox" style={{ transform: 'scale(1.2)' }} checked={!!meal.dinner_provided} onChange={e => {
+                                    <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '0.75rem', gap: '0.35rem', cursor: 'pointer' }}>
+                                        <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>A</span>
+                                        <input type="checkbox" style={{ width: '20px', height: '20px' }} checked={!!meal.dinner_provided} onChange={e => {
                                             const newMeals = [...formData.meals_provided!];
                                             newMeals[idx].dinner_provided = e.target.checked ? 1 : 0;
                                             setFormData({ ...formData, meals_provided: newMeals });
@@ -353,24 +390,36 @@ export default function TravelExpenseForm() {
                     </div>
                 )}
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     {formData.expense_items?.map((item, idx) => (
-                        <div key={idx} style={{
-                            backgroundColor: '#fff',
-                            padding: '1.25rem',
-                            borderRadius: 'var(--radius-lg)',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                            border: '1px solid #f1f5f9',
-                            position: 'relative'
+                        <div key={idx} className="card" style={{
+                            padding: window.innerWidth < 640 ? '1.25rem' : '1.5rem',
+                            position: 'relative',
+                            border: '1px solid #e2e8f0',
+                            backgroundColor: 'white'
                         }}>
-                            <button onClick={() => removeExpenseItem(idx)} style={{
-                                position: 'absolute', top: '10px', right: '10px',
-                                color: '#94a3b8', background: 'none', border: 'none', fontSize: '1.2rem', padding: '0.5rem', cursor: 'pointer'
-                            }}>×</button>
+                            <button
+                                onClick={() => removeExpenseItem(idx)}
+                                className="btn"
+                                style={{
+                                    position: 'absolute', top: '10px', right: '10px',
+                                    color: '#ef4444', background: '#fee2e2', border: 'none',
+                                    fontSize: '1.25rem', width: '32px', height: '32px',
+                                    padding: 0, borderRadius: '50%', cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >
+                                ×
+                            </button>
 
-                            <div style={{ marginBottom: '1rem', paddingRight: '2rem' }}>
-                                <label style={{ ...labelStyle, fontSize: '0.75rem' }}>Art der Ausgabe</label>
-                                <select style={{ ...inputStyle, fontWeight: 600, border: 'none', background: '#f8fafc', padding: '0.5rem' }} value={item.expense_type} onChange={e => updateExpenseItem(idx, 'expense_type', e.target.value)}>
+                            <div style={{ marginBottom: '1.25rem', paddingRight: '2.5rem' }}>
+                                <label style={labelStyle}>Art der Ausgabe</label>
+                                <select
+                                    className="btn"
+                                    style={{ ...inputStyle, fontWeight: 700, backgroundColor: '#f8fafc', height: '48px' }}
+                                    value={item.expense_type}
+                                    onChange={e => updateExpenseItem(idx, 'expense_type', e.target.value)}
+                                >
                                     <option>Fahrtkosten</option>
                                     <option>Hotel</option>
                                     <option>Verpflegung</option>
@@ -380,33 +429,45 @@ export default function TravelExpenseForm() {
                                 </select>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 400 ? '1fr' : '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
                                 <div>
                                     <label style={labelStyle}>Datum</label>
                                     <button
                                         type="button"
+                                        className="btn"
                                         onClick={() => setOpenExpenseCalendar(openExpenseCalendar === idx ? null : idx)}
                                         style={{
                                             ...inputStyle,
+                                            height: '48px',
                                             textAlign: 'left',
                                             cursor: 'pointer',
                                             display: 'flex',
                                             justifyContent: 'space-between',
-                                            alignItems: 'center'
+                                            alignItems: 'center',
+                                            backgroundColor: 'white'
                                         }}
                                     >
-                                        <span>{item.date ? format(new Date(item.date), 'dd.MM.yyyy', { locale: de }) : 'Datum wählen'}</span>
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>
+                                            {item.date ? format(new Date(item.date), 'dd.MM.yyyy', { locale: de }) : 'Datum wählen'}
+                                        </span>
                                         <span style={{ fontSize: '1.1rem' }}>📅</span>
                                     </button>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Betrag (€)</label>
-                                    <input type="number" step="0.01" style={{ ...inputStyle, fontWeight: 600 }} value={item.amount} onChange={e => updateExpenseItem(idx, 'amount', parseFloat(e.target.value) || 0)} />
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="btn"
+                                        style={{ ...inputStyle, fontWeight: 800, textAlign: 'left', height: '48px', color: 'var(--primary-color)' }}
+                                        value={item.amount}
+                                        onChange={e => updateExpenseItem(idx, 'amount', parseFloat(e.target.value) || 0)}
+                                    />
                                 </div>
                             </div>
 
                             {openExpenseCalendar === idx && (
-                                <div style={{ marginBottom: '1rem', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '0.5rem', backgroundColor: '#fff', borderTop: '4px solid #3b82f6' }}>
+                                <div style={{ marginBottom: '1.5rem', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '0.5rem', backgroundColor: '#fff', borderTop: '4px solid var(--primary-color)' }}>
                                     <TouchSingleCalendar
                                         date={item.date}
                                         onChange={(newDate) => {
@@ -417,24 +478,33 @@ export default function TravelExpenseForm() {
                                 </div>
                             )}
 
-                            <div style={{ marginBottom: '1rem' }}>
+                            <div style={{ marginBottom: '1.25rem' }}>
                                 <label style={labelStyle}>Beschreibung</label>
-                                <input style={inputStyle} value={item.description} onChange={e => updateExpenseItem(idx, 'description', e.target.value)} placeholder="Details..." />
+                                <input className="btn" style={{ ...inputStyle, textAlign: 'left', height: '48px' }} value={item.description} onChange={e => updateExpenseItem(idx, 'description', e.target.value)} placeholder="Details..." />
                             </div>
 
                             <div>
                                 <label style={labelStyle}>Beleg</label>
                                 {item.receipt ? (
-                                    <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #bbf7d0' }}>
-                                        <span style={{ marginRight: '0.5rem' }}>📄</span>
-                                        <a href={item.receipt} target="_blank" rel="noreferrer" style={{ color: '#166534', flex: 1, textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>Beleg ansehen</a>
-                                        <button onClick={() => updateExpenseItem(idx, 'receipt', null)} style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600 }}>Löschen</button>
+                                    <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', padding: '0.875rem', borderRadius: 'var(--radius-md)', border: '1px solid #bbf7d0' }}>
+                                        <span style={{ marginRight: '0.75rem', fontSize: '1.25rem' }}>📄</span>
+                                        <a href={item.receipt} target="_blank" rel="noreferrer" style={{ color: '#166534', flex: 1, textDecoration: 'none', fontWeight: 700, fontSize: '0.875rem' }}>Beleg ansehen</a>
+                                        <button
+                                            onClick={() => updateExpenseItem(idx, 'receipt', null)}
+                                            className="btn"
+                                            style={{ color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.8125rem' }}
+                                        >
+                                            Entfernen
+                                        </button>
                                     </div>
                                 ) : (
                                     <label style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        padding: '1rem', border: '2px dashed #cbd5e1', borderRadius: 'var(--radius-md)',
-                                        cursor: 'pointer', background: '#f8fafc', color: 'var(--text-secondary)'
+                                        padding: '1.25rem', border: '2px dashed #cbd5e1', borderRadius: 'var(--radius-md)',
+                                        cursor: 'pointer', background: '#f8fafc', color: 'var(--text-secondary)',
+                                        transition: 'all 0.2s',
+                                        fontWeight: 600,
+                                        fontSize: '0.875rem'
                                     }}>
                                         <input type="file" onChange={e => {
                                             if (e.target.files && e.target.files[0]) handleFileUpload(idx, e.target.files[0]);
@@ -448,27 +518,33 @@ export default function TravelExpenseForm() {
                 </div>
             </div>
 
-            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'white', borderTop: '1px solid #e2e8f0', boxShadow: '0 -2px 10px rgba(0,0,0,0.05)' }}>
+            <div style={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '1rem',
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(10px)',
+                borderTop: '1px solid #e2e8f0',
+                boxShadow: '0 -4px 12px rgba(0,0,0,0.05)',
+                zIndex: 1000,
+                display: 'flex',
+                justifyContent: 'center'
+            }}>
                 <button
                     onClick={handleSave}
                     disabled={saving}
+                    className="btn btn-primary btn-full"
                     style={{
-                        width: '100%',
-                        maxWidth: '600px',
-                        margin: '0 auto',
-                        display: 'block',
-                        padding: '1rem',
-                        borderRadius: 'var(--radius-md)',
-                        border: 'none',
-                        backgroundColor: '#10b981',
-                        color: 'white',
+                        maxWidth: '500px',
+                        height: '52px',
                         fontSize: '1.1rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        opacity: saving ? 0.8 : 1
+                        fontWeight: 800,
+                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
                     }}
                 >
-                    {saving ? 'Speichert...' : 'Speichern'}
+                    {saving ? '...' : (id ? 'Speichern' : 'Einreichen')}
                 </button>
             </div>
         </div>

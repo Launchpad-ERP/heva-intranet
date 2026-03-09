@@ -53,37 +53,58 @@ export default function News() {
     }
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '2rem' }}>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '3rem' }}>
             {/* Header */}
-            <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '1.5rem',
+                gap: '0.25rem',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(8px)',
+                padding: '0.5rem 0',
+                margin: '0 -0.75rem 1.5rem -0.75rem',
+                paddingLeft: '0.75rem'
+            }}>
                 <button
                     onClick={() => navigate('/')}
-                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem', cursor: 'pointer' }}
+                    className="btn"
+                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
                 >
                     ←
                 </button>
-                <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Neuigkeiten</h1>
+                <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.25rem' : '1.5rem', fontWeight: 800 }}>Neuigkeiten</h1>
             </header>
 
             {/* Category Filter */}
             {categories.length > 0 && (
                 <div style={{
                     display: 'flex',
-                    gap: '0.5rem',
-                    marginBottom: '1rem',
+                    gap: '0.625rem',
+                    marginBottom: '1.5rem',
                     overflowX: 'auto',
-                    paddingBottom: '0.5rem'
+                    paddingBottom: '0.75rem',
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                    WebkitOverflowScrolling: 'touch'
                 }}>
                     <button
                         onClick={() => setSelectedCategory('')}
                         style={{
-                            padding: '0.5rem 1rem',
-                            borderRadius: '999px',
+                            padding: '0.5rem 1.25rem',
+                            borderRadius: 'var(--radius-full)',
                             border: 'none',
-                            backgroundColor: !selectedCategory ? 'var(--primary-color)' : '#e2e8f0',
-                            color: !selectedCategory ? 'white' : 'inherit',
+                            backgroundColor: !selectedCategory ? 'var(--primary-color)' : '#f1f5f9',
+                            color: !selectedCategory ? 'white' : 'var(--text-secondary)',
                             whiteSpace: 'nowrap',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            fontWeight: 600,
+                            fontSize: '0.875rem',
+                            boxShadow: !selectedCategory ? '0 4px 6px -1px rgba(37, 99, 235, 0.2)' : 'none'
                         }}
                     >
                         Alle
@@ -93,13 +114,17 @@ export default function News() {
                             key={cat.name}
                             onClick={() => setSelectedCategory(cat.name)}
                             style={{
-                                padding: '0.5rem 1rem',
-                                borderRadius: '999px',
+                                padding: '0.5rem 1.25rem',
+                                borderRadius: 'var(--radius-full)',
                                 border: 'none',
-                                backgroundColor: selectedCategory === cat.name ? (cat.color || 'var(--primary-color)') : '#e2e8f0',
-                                color: selectedCategory === cat.name ? 'white' : 'inherit',
+                                backgroundColor: selectedCategory === cat.name ? (cat.color || 'var(--primary-color)') : '#f1f5f9',
+                                color: selectedCategory === cat.name ? 'white' : 'var(--text-secondary)',
                                 whiteSpace: 'nowrap',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                fontWeight: 600,
+                                fontSize: '0.875rem',
+                                boxShadow: selectedCategory === cat.name ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
                             }}
                         >
                             {cat.name}
@@ -190,39 +215,51 @@ export default function News() {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    backgroundColor: 'rgba(0,0,0,0.6)',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center',
+                    alignItems: window.innerWidth < 640 ? 'flex-end' : 'center',
                     zIndex: 1000,
-                    padding: '1rem'
+                    padding: window.innerWidth < 640 ? 0 : '1rem',
+                    backdropFilter: 'blur(4px)'
                 }}>
                     <div style={{
                         backgroundColor: 'var(--surface-color)',
                         width: '100%',
-                        maxWidth: '600px',
-                        maxHeight: '90vh',
-                        borderRadius: 'var(--radius-lg)',
+                        maxWidth: '700px',
+                        maxHeight: window.innerWidth < 640 ? '95vh' : '90vh',
+                        borderRadius: window.innerWidth < 640 ? 'var(--radius-lg) var(--radius-lg) 0 0' : 'var(--radius-lg)',
                         overflow: 'hidden',
                         display: 'flex',
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        boxShadow: 'var(--shadow-lg)',
+                        animation: window.innerWidth < 640 ? 'slideUp 0.3s ease-out' : 'none'
                     }}>
                         {/* Modal Header */}
                         <div style={{
-                            padding: '1rem',
-                            borderBottom: '1px solid #e2e8f0',
+                            padding: '1.25rem',
+                            borderBottom: '1px solid #f1f5f9',
                             display: 'flex',
                             justifyContent: 'space-between',
-                            alignItems: 'center'
+                            alignItems: 'flex-start',
+                            gap: '1rem'
                         }}>
-                            <h2 style={{ margin: 0, fontSize: '1.25rem' }}>{selectedArticle.title}</h2>
+                            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.3 }}>{selectedArticle.title}</h2>
                             <button
                                 onClick={() => setSelectedArticle(null)}
+                                className="btn"
                                 style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    fontSize: '1.5rem',
-                                    cursor: 'pointer'
+                                    background: '#f8fafc',
+                                    border: '1px solid #e2e8f0',
+                                    fontSize: '1.25rem',
+                                    width: '36px',
+                                    height: '36px',
+                                    padding: 0,
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
                                 }}
                             >
                                 ×
@@ -230,37 +267,63 @@ export default function News() {
                         </div>
 
                         {/* Modal Content */}
-                        <div style={{ padding: '1rem', overflow: 'auto', flex: 1 }}>
+                        <div style={{ padding: '1.5rem', overflow: 'auto', flex: 1, WebkitOverflowScrolling: 'touch' }}>
                             {selectedArticle.image && (
                                 <img
                                     src={selectedArticle.image}
                                     alt={selectedArticle.title}
                                     style={{
                                         width: '100%',
-                                        height: '200px',
+                                        height: window.innerWidth < 640 ? '180px' : '280px',
                                         objectFit: 'cover',
                                         borderRadius: 'var(--radius-md)',
-                                        marginBottom: '1rem'
+                                        marginBottom: '1.25rem',
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
                                     }}
                                 />
                             )}
                             <div style={{
                                 display: 'flex',
-                                gap: '1rem',
-                                marginBottom: '1rem',
-                                fontSize: '0.875rem',
+                                flexWrap: 'wrap',
+                                gap: '0.75rem',
+                                marginBottom: '1.5rem',
+                                fontSize: '0.8125rem',
                                 color: 'var(--text-secondary)'
                             }}>
-                                {selectedArticle.author && <span>Von: {selectedArticle.author}</span>}
+                                {selectedArticle.author && (
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        👤 <span style={{ fontWeight: 600 }}>{selectedArticle.author}</span>
+                                    </span>
+                                )}
                                 {selectedArticle.publish_date && (
-                                    <span>{format(new Date(selectedArticle.publish_date), 'dd. MMMM yyyy', { locale: de })}</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        📅 {format(new Date(selectedArticle.publish_date), 'dd. MMMM yyyy', { locale: de })}
+                                    </span>
                                 )}
                             </div>
                             <div
+                                className="news-content"
                                 dangerouslySetInnerHTML={{ __html: selectedArticle.content || '' }}
-                                style={{ lineHeight: 1.6 }}
+                                style={{
+                                    lineHeight: 1.7,
+                                    fontSize: '1rem',
+                                    color: 'var(--text-color)'
+                                }}
                             />
                         </div>
+
+                        {/* Modal Footer (for mobile to close) */}
+                        {window.innerWidth < 640 && (
+                            <div style={{ padding: '1rem', borderTop: '1px solid #f1f5f9', backgroundColor: '#f8fafc' }}>
+                                <button
+                                    onClick={() => setSelectedArticle(null)}
+                                    className="btn btn-primary btn-full"
+                                    style={{ height: '48px', fontWeight: 700 }}
+                                >
+                                    Schließen
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

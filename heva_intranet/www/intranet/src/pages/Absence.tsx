@@ -12,6 +12,7 @@ export default function Absence() {
     const { user } = useAuth();
     const [requests, setRequests] = useState<AbsenceRequest[]>([]);
     const [types, setTypes] = useState<AbsenceType[]>([]);
+    const [users, setUsers] = useState<{ name: string; full_name: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
@@ -23,7 +24,8 @@ export default function Absence() {
         from_date: '',
         to_date: '',
         reason: '',
-        half_day: 0
+        half_day: 0,
+        substitute: ''
     });
 
     useEffect(() => {
@@ -32,13 +34,15 @@ export default function Absence() {
 
     async function loadData() {
         try {
-            const [reqs, typeList] = await Promise.all([
+            const [reqs, typeList, userList] = await Promise.all([
                 absenceApi.getMyRequests(user?.name),
-                absenceApi.getAbsenceTypes()
+                absenceApi.getAbsenceTypes(),
+                absenceApi.getUsers()
             ]);
             setRequests(reqs);
             setTypes(typeList);
-            if (typeList.length > 0) {
+            setUsers(userList);
+            if (typeList.length > 0 && !formData.absence_type) {
                 setFormData(prev => ({ ...prev, absence_type: typeList[0].name }));
             }
         } catch (e) {
@@ -75,7 +79,8 @@ export default function Absence() {
                 from_date: '',
                 to_date: '',
                 reason: '',
-                half_day: 0
+                half_day: 0,
+                substitute: ''
             });
             await loadData();
         } catch (e: any) {
@@ -106,7 +111,8 @@ export default function Absence() {
             from_date: req.from_date,
             to_date: req.to_date,
             reason: req.reason || '',
-            half_day: req.half_day || 0
+            half_day: req.half_day || 0,
+            substitute: req.substitute || ''
         });
         setEditingId(req.name);
         setShowForm(true);
@@ -186,12 +192,29 @@ export default function Absence() {
     if (loading && !requests.length) return <div style={{ padding: '2rem', textAlign: 'center' }}>Laden...</div>;
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '5rem' }}>
-            <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem' }}>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '6rem' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '1.5rem',
+                gap: '0.25rem',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(8px)',
+                padding: '0.5rem 0',
+                margin: '0 -0.75rem 1.5rem -0.75rem',
+                paddingLeft: '0.75rem'
+            }}>
+                <button
+                    onClick={() => navigate('/')}
+                    className="btn"
+                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
+                >
                     ←
                 </button>
-                <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Abwesenheiten</h1>
+                <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.25rem' : '1.5rem', fontWeight: 800 }}>Abwesenheiten</h1>
             </header>
 
             {/* Empty State / Seeding */}
@@ -220,34 +243,94 @@ export default function Absence() {
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Keine Einträge gefunden.</p>
                 ) : (
                     requests.map(req => (
-                        <div key={req.name} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{req.absence_type}</div>
-                                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                        <div
+                            key={req.name}
+                            className="card"
+                            style={{
+                                display: 'flex',
+                                flexDirection: window.innerWidth < 480 ? 'column' : 'row',
+                                justifyContent: 'space-between',
+                                alignItems: window.innerWidth < 480 ? 'stretch' : 'center',
+                                gap: '1rem',
+                                padding: '1rem'
+                            }}
+                        >
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 700, marginBottom: '0.25rem', fontSize: '1rem', color: 'var(--text-color)' }}>
+                                    {req.absence_type}
+                                </div>
+                                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
                                     {format(new Date(req.from_date), 'dd. MMM yyyy', { locale: de })}
                                     {req.from_date !== req.to_date && ` - ${format(new Date(req.to_date), 'dd. MMM yyyy', { locale: de })}`}
                                 </div>
-                                {req.reason && <div style={{ fontSize: '0.875rem', marginTop: '0.25rem', fontStyle: 'italic' }}>{req.reason}</div>}
+                                {req.reason && (
+                                    <div style={{
+                                        fontSize: '0.875rem',
+                                        marginTop: '0.5rem',
+                                        padding: '0.5rem',
+                                        backgroundColor: '#f8fafc',
+                                        borderRadius: '4px',
+                                        borderLeft: '3px solid #e2e8f0'
+                                    }}>
+                                        {req.reason}
+                                    </div>
+                                )}
+                                {req.substitute && (
+                                    <div style={{ fontSize: '0.8125rem', marginTop: '0.5rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        👤 Vertretung: <span style={{ fontWeight: 600 }}>{users.find(u => u.name === req.substitute)?.full_name || req.substitute}</span>
+                                    </div>
+                                )}
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: window.innerWidth < 480 ? 'row' : 'column',
+                                alignItems: window.innerWidth < 480 ? 'center' : 'flex-end',
+                                justifyContent: 'space-between',
+                                gap: '0.75rem',
+                                borderTop: window.innerWidth < 480 ? '1px solid #f1f5f9' : 'none',
+                                paddingTop: window.innerWidth < 480 ? '0.75rem' : 0
+                            }}>
                                 <div style={{
-                                    padding: '0.25rem 0.5rem',
-                                    borderRadius: 'var(--radius-sm)',
+                                    padding: '0.35rem 0.75rem',
+                                    borderRadius: 'var(--radius-full)',
                                     backgroundColor: getStatusColor(req.status),
                                     color: 'white',
                                     fontSize: '0.75rem',
-                                    fontWeight: 600
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.025em'
                                 }}>
                                     {req.status}
                                 </div>
                                 {req.status === 'Entwurf' && (
                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                        <button onClick={() => handleEdit(req)} style={{
-                                            background: 'none', border: '1px solid #cbd5e1', borderRadius: '4px', padding: '0.5rem 0.75rem', fontSize: '1rem', cursor: 'pointer'
-                                        }}>✏️</button>
-                                        <button onClick={() => handleDelete(req.name)} style={{
-                                            background: 'none', border: '1px solid #fca5a5', color: '#ef4444', borderRadius: '4px', padding: '0.5rem 0.75rem', fontSize: '1rem', cursor: 'pointer'
-                                        }}>🗑️</button>
+                                        <button
+                                            onClick={() => handleEdit(req)}
+                                            className="btn"
+                                            style={{
+                                                background: '#f8fafc',
+                                                border: '1px solid #e2e8f0',
+                                                width: '40px',
+                                                height: '40px',
+                                                padding: 0,
+                                                fontSize: '1rem',
+                                                cursor: 'pointer'
+                                            }}
+                                        >✏️</button>
+                                        <button
+                                            onClick={() => handleDelete(req.name)}
+                                            className="btn"
+                                            style={{
+                                                background: '#fee2e2',
+                                                border: '1px solid #fecaca',
+                                                color: '#ef4444',
+                                                width: '40px',
+                                                height: '40px',
+                                                padding: 0,
+                                                fontSize: '1rem',
+                                                cursor: 'pointer'
+                                            }}
+                                        >🗑️</button>
                                     </div>
                                 )}
                             </div>
@@ -265,7 +348,8 @@ export default function Absence() {
                         from_date: '',
                         to_date: '',
                         reason: '',
-                        half_day: 0
+                        half_day: 0,
+                        substitute: ''
                     });
                     setEditingId(null);
                     setShowCalendar(false);
@@ -273,19 +357,22 @@ export default function Absence() {
                 }}
                 style={{
                     position: 'fixed',
-                    bottom: '2rem',
-                    right: '2rem',
-                    width: '56px',
-                    height: '56px',
+                    bottom: '2.5rem',
+                    right: '1.5rem',
+                    width: '60px',
+                    height: '60px',
                     borderRadius: '50%',
                     backgroundColor: 'var(--primary-color)',
                     color: 'white',
                     border: 'none',
                     fontSize: '2rem',
-                    boxShadow: 'var(--shadow-lg)',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    zIndex: 900,
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s'
                 }}
             >
                 +
@@ -305,49 +392,53 @@ export default function Absence() {
                     alignItems: 'flex-end',
                     zIndex: 1000
                 }}>
-                    <div style={{
+                    <div className="card" style={{
                         backgroundColor: 'var(--surface-color)',
                         width: '100%',
-                        maxWidth: '600px',
+                        maxWidth: '500px',
+                        maxHeight: '95vh',
+                        overflowY: 'auto',
                         borderTopLeftRadius: 'var(--radius-lg)',
                         borderTopRightRadius: 'var(--radius-lg)',
-                        padding: '1.5rem',
-                        animation: 'slideUp 0.3s ease-out'
+                        padding: window.innerWidth < 640 ? '1.25rem' : '2rem',
+                        animation: 'slideUp 0.3s ease-out',
+                        boxShadow: '0 -10px 25px -5px rgba(0,0,0,0.1)'
                     }}>
-                        <h2 style={{ marginTop: 0 }}>{editingId ? 'Antrag bearbeiten' : 'Neuer Antrag'}</h2>
+                        <h2 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem' }}>{editingId ? 'Antrag bearbeiten' : 'Neuer Antrag'}</h2>
                         <form onSubmit={handleSubmit}>
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Typ</label>
+                            <div style={{ marginBottom: '1.25rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>Typ</label>
                                 <select
+                                    className="btn"
                                     value={formData.absence_type}
                                     onChange={e => setFormData({ ...formData, absence_type: e.target.value })}
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                    style={{ width: '100%', height: '48px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
                                 >
                                     {types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
                                 </select>
                             </div>
 
-                            <div style={{ marginBottom: '1rem', border: '1px solid #cbd5e1', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+                            <div style={{ marginBottom: '1.25rem', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', padding: '1rem', backgroundColor: '#f8fafc' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                    <h3 style={{ margin: 0, fontSize: '1rem' }}>Zeitraum</h3>
+                                    <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>ZEITRAUM</h3>
                                     <button
                                         type="button"
                                         onClick={() => setShowCalendar(!showCalendar)}
+                                        className="btn"
                                         style={{
-                                            background: 'none',
+                                            backgroundColor: 'white',
                                             border: '1px solid #cbd5e1',
-                                            padding: '0.25rem 0.5rem',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            fontSize: '0.875rem'
+                                            padding: '0.4rem 0.75rem',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600
                                         }}
                                     >
-                                        {showCalendar ? '🔽 Schließen' : '📅 Kalender öffnen'}
+                                        {showCalendar ? '🔽 Schließen' : '📅 Kalender'}
                                     </button>
                                 </div>
 
                                 {showCalendar && (
-                                    <div style={{ marginBottom: '1rem' }}>
+                                    <div style={{ marginBottom: '1rem', backgroundColor: 'white', padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
                                         <TouchRangeCalendar
                                             startDate={formData.from_date}
                                             endDate={formData.to_date}
@@ -356,33 +447,56 @@ export default function Absence() {
                                     </div>
                                 )}
 
-                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                <div style={{ display: 'flex', gap: '0.75rem', flexDirection: window.innerWidth < 400 ? 'column' : 'row' }}>
                                     <div style={{ flex: 1 }}>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Von</label>
-                                        <div style={{ padding: '0.75rem', backgroundColor: '#f1f5f9', borderRadius: 'var(--radius-md)', fontSize: '0.9rem' }}>
-                                            {formData.from_date ? format(new Date(formData.from_date), 'dd.MM.yyyy', { locale: de }) : 'Bitte wählen'}
+                                        <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>VON</label>
+                                        <div style={{ padding: '0.75rem', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', fontSize: '0.9rem', fontWeight: 500 }}>
+                                            {formData.from_date ? format(new Date(formData.from_date), 'dd.MM.yyyy', { locale: de }) : '---'}
                                         </div>
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Bis</label>
-                                        <div style={{ padding: '0.75rem', backgroundColor: '#f1f5f9', borderRadius: 'var(--radius-md)', fontSize: '0.9rem' }}>
-                                            {formData.to_date ? format(new Date(formData.to_date), 'dd.MM.yyyy', { locale: de }) : 'Bitte wählen'}
+                                        <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>BIS</label>
+                                        <div style={{ padding: '0.75rem', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', fontSize: '0.9rem', fontWeight: 500 }}>
+                                            {formData.to_date ? format(new Date(formData.to_date), 'dd.MM.yyyy', { locale: de }) : '---'}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Begründung</label>
+                            <div style={{ marginBottom: '1.25rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>Vertretung (Optional)</label>
                                 <input
+                                    list="user-list"
                                     type="text"
+                                    className="btn"
+                                    placeholder="Name suchen..."
+                                    value={formData.substitute ? (users.find(u => u.name === formData.substitute)?.full_name || formData.substitute) : ''}
+                                    onChange={e => {
+                                        const val = e.target.value;
+                                        const foundUser = users.find(u => u.full_name === val);
+                                        setFormData({ ...formData, substitute: foundUser ? foundUser.name : val });
+                                    }}
+                                    style={{ width: '100%', height: '48px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left' }}
+                                />
+                                <datalist id="user-list">
+                                    {users.map(u => (
+                                        <option key={u.name} value={u.full_name} />
+                                    ))}
+                                </datalist>
+                            </div>
+
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>Begründung</label>
+                                <textarea
+                                    className="btn"
                                     value={formData.reason}
                                     onChange={e => setFormData({ ...formData, reason: e.target.value })}
-                                    style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}
+                                    rows={3}
+                                    style={{ width: '100%', height: 'auto', minHeight: '80px', border: '1px solid #cbd5e1', backgroundColor: 'white', textAlign: 'left', lineHeight: '1.4' }}
                                 />
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', flexDirection: window.innerWidth < 480 ? 'column-reverse' : 'row' }}>
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -390,17 +504,17 @@ export default function Absence() {
                                         setEditingId(null);
                                     }}
                                     className="btn"
-                                    style={{ flex: 1, backgroundColor: '#e2e8f0', color: 'black' }}
+                                    style={{ flex: 1, height: '48px', backgroundColor: '#f1f5f9', color: 'var(--text-color)', fontWeight: 600, border: '1px solid #e2e8f0' }}
                                 >
                                     Abbrechen
                                 </button>
                                 <button
                                     type="submit"
                                     className="btn btn-primary"
-                                    style={{ flex: 1 }}
+                                    style={{ flex: 1, height: '48px', fontWeight: 700 }}
                                     disabled={loading}
                                 >
-                                    {loading ? 'Speichern...' : 'Einreichen'}
+                                    {loading ? '...' : (editingId ? 'Speichern' : 'Einreichen')}
                                 </button>
                             </div>
                         </form>

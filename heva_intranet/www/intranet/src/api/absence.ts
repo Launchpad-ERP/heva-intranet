@@ -16,6 +16,7 @@ export interface AbsenceRequest {
     to_date: string;
     half_day: number;
     half_day_date?: string;
+    substitute?: string;
     reason?: string;
     status: 'Entwurf' | 'Eingereicht' | 'Genehmigt' | 'Abgelehnt' | 'Open' | 'Approved' | 'Rejected';
     medical_certificate?: string;
@@ -83,6 +84,18 @@ export const absenceApi = {
             data: {
                 doctype: 'Intranet Absence Request',
                 name
+            }
+        }),
+
+    getUsers: () =>
+        api<{ name: string; full_name: string }[]>('frappe.client.get_list', {
+            method: 'GET',
+            params: {
+                doctype: 'User',
+                fields: JSON.stringify(['name', 'full_name']),
+                filters: JSON.stringify([['enabled', '=', 1], ['user_type', '=', 'System User']]),
+                order_by: 'full_name asc',
+                limit_page_length: '1000'
             }
         })
 };

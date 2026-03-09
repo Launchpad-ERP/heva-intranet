@@ -12,12 +12,25 @@ import Trainings from './pages/Trainings';
 import TravelExpenses from './pages/TravelExpenses';
 import TravelExpenseForm from './pages/TravelExpenseForm';
 
+// Admin Pages
+import AdminLayout from './components/layout/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminTimeTracking from './pages/admin/AdminTimeTracking';
+import AdminAbsence from './pages/admin/AdminAbsence';
+import AdminTravel from './pages/admin/AdminTravel';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminNews from './pages/admin/AdminNews';
+import AdminSuggestions from './pages/admin/AdminSuggestions';
+import AdminTrainings from './pages/admin/AdminTrainings';
+
 function App() {
     return (
         <AuthProvider>
             <HashRouter>
                 <Routes>
                     <Route path="/login" element={<Login />} />
+
+                    {/* Public/Employee Routes */}
                     <Route path="/" element={
                         <ProtectedRoute>
                             <Home />
@@ -68,6 +81,49 @@ function App() {
                             <TravelExpenseForm />
                         </ProtectedRoute>
                     } />
+
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminDashboard /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/time" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminTimeTracking /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/absence" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminAbsence /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/travel" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminTravel /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/users" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminUsers /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/news" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminNews /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/suggestions" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminSuggestions /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin/trainings" element={
+                        <ProtectedRoute adminOnly={true}>
+                            <AdminLayout><AdminTrainings /></AdminLayout>
+                        </ProtectedRoute>
+                    } />
+
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </HashRouter>

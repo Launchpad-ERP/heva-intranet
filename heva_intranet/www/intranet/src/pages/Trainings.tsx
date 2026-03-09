@@ -57,27 +57,56 @@ export default function Trainings() {
     if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Laden...</div>;
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '5rem', maxWidth: '800px', margin: '0 auto' }}>
-            <header style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem' }}>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '6rem', maxWidth: '800px', margin: '0 auto' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '1.5rem',
+                gap: '0.25rem',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(8px)',
+                padding: '0.5rem 0',
+                margin: '0 -0.75rem 1.5rem -0.75rem',
+                paddingLeft: '0.75rem'
+            }}>
+                <button
+                    onClick={() => navigate('/')}
+                    className="btn"
+                    style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
+                >
                     ←
                 </button>
-                <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Schulungen</h1>
+                <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.25rem' : '1.5rem', fontWeight: 800 }}>Schulungen</h1>
             </header>
 
             {/* Filter */}
             {providers.length > 0 && (
-                <div style={{ marginBottom: '1rem', overflowX: 'auto', display: 'flex', gap: '0.5rem', paddingBottom: '0.5rem' }}>
+                <div style={{
+                    marginBottom: '1.5rem',
+                    overflowX: 'auto',
+                    display: 'flex',
+                    gap: '0.625rem',
+                    padding: '0.25rem 0.25rem 0.75rem 0.25rem',
+                    margin: '0 -0.25rem',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                }}>
                     <button
                         onClick={() => setFilterProvider('')}
-                        className={`chip ${!filterProvider ? 'active' : ''}`}
+                        className="btn"
                         style={{
-                            padding: '0.5rem 1rem',
+                            padding: '0.5rem 1.25rem',
                             borderRadius: '20px',
-                            border: '1px solid #cbd5e1',
+                            border: '1px solid ' + (!filterProvider ? 'var(--primary-color)' : '#cbd5e1'),
                             background: !filterProvider ? 'var(--primary-color)' : 'white',
-                            color: !filterProvider ? 'white' : 'black',
-                            whiteSpace: 'nowrap'
+                            color: !filterProvider ? 'white' : 'var(--text-secondary)',
+                            whiteSpace: 'nowrap',
+                            fontSize: '0.875rem',
+                            fontWeight: 700,
+                            boxShadow: !filterProvider ? '0 4px 12px rgba(99, 102, 241, 0.2)' : 'none'
                         }}
                     >
                         Alle
@@ -86,14 +115,17 @@ export default function Trainings() {
                         <button
                             key={p}
                             onClick={() => setFilterProvider(p)}
-                            className={`chip ${filterProvider === p ? 'active' : ''}`}
+                            className="btn"
                             style={{
-                                padding: '0.5rem 1rem',
+                                padding: '0.5rem 1.25rem',
                                 borderRadius: '20px',
-                                border: '1px solid #cbd5e1',
+                                border: '1px solid ' + (filterProvider === p ? 'var(--primary-color)' : '#cbd5e1'),
                                 background: filterProvider === p ? 'var(--primary-color)' : 'white',
-                                color: filterProvider === p ? 'white' : 'black',
-                                whiteSpace: 'nowrap'
+                                color: filterProvider === p ? 'white' : 'var(--text-secondary)',
+                                whiteSpace: 'nowrap',
+                                fontSize: '0.875rem',
+                                fontWeight: 700,
+                                boxShadow: filterProvider === p ? '0 4px 12px rgba(99, 102, 241, 0.2)' : 'none'
                             }}
                         >
                             {p}
@@ -107,32 +139,73 @@ export default function Trainings() {
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Keine Schulungen gefunden.</p>
                 ) : (
                     filtered.map(t => (
-                        <div key={t.name} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{t.subject}</h3>
-                                <span style={{ fontSize: '0.75rem', padding: '0.125rem 0.5rem', borderRadius: '4px', background: '#e0e7ff', color: '#3730a3' }}>
+                        <div key={t.name} className="card" style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.75rem',
+                            padding: '1.25rem'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)', fontWeight: 800, lineHeight: 1.3 }}>{t.subject}</h3>
+                                <span style={{
+                                    fontSize: '0.65rem',
+                                    fontWeight: 800,
+                                    textTransform: 'uppercase',
+                                    padding: '0.2rem 0.5rem',
+                                    borderRadius: 'var(--radius-sm)',
+                                    background: '#eff6ff',
+                                    color: 'var(--primary-color)',
+                                    border: '1px solid #dbeafe',
+                                    whiteSpace: 'nowrap'
+                                }}>
                                     {t.provider}
                                 </span>
                             </div>
 
-                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                {t.date_text && <div>📅 {t.date_text}</div>}
-                                {t.location && <div>📍 {t.location}</div>}
-                                {t.price && <div>💰 {t.price}</div>}
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: window.innerWidth < 480 ? '1fr' : '1fr 1fr',
+                                gap: '0.5rem',
+                                fontSize: '0.8125rem',
+                                color: 'var(--text-secondary)',
+                                fontWeight: 500
+                            }}>
+                                {t.date_text && <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>📅 {t.date_text}</div>}
+                                {t.location && <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>📍 {t.location}</div>}
+                                {t.price && <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>💰 {t.price}</div>}
                             </div>
 
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
                                 <a
                                     href={t.url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    style={{ flex: 1, textAlign: 'center', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 'var(--radius-sm)', textDecoration: 'none', color: 'var(--text-primary)' }}
+                                    className="btn"
+                                    style={{
+                                        flex: 1,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        height: '44px',
+                                        border: '1px solid #cbd5e1',
+                                        borderRadius: 'var(--radius-md)',
+                                        textDecoration: 'none',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 700
+                                    }}
                                 >
                                     Details
                                 </a>
                                 <button
                                     onClick={() => handleRequest(t)}
-                                    style={{ flex: 1, padding: '0.5rem', background: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)' }}
+                                    className="btn btn-primary"
+                                    style={{
+                                        flex: 1.5,
+                                        height: '44px',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 800
+                                    }}
                                 >
                                     Angebot anfragen
                                 </button>

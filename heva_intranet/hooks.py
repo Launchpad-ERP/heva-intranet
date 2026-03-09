@@ -92,6 +92,7 @@ website_route_rules = [
 
 # before_install = "heva_intranet.install.before_install"
 # after_install = "heva_intranet.install.after_install"
+after_migrate = "heva_intranet.setup.after_migrate"
 
 # Uninstallation
 # ------------

@@ -44,30 +44,35 @@ export default function TravelExpenses() {
     if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Laden...</div>;
 
     return (
-        <div style={{ padding: '1rem', paddingBottom: '5rem' }}>
-            <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ padding: window.innerWidth < 640 ? '0.75rem' : '1.5rem', paddingBottom: '6rem' }}>
+            <header style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '1.5rem',
+                gap: '0.5rem'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <button
                         onClick={() => navigate('/')}
-                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', marginRight: '1rem', cursor: 'pointer' }}
+                        className="btn"
+                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', padding: '0.5rem', cursor: 'pointer' }}
                     >
                         ←
                     </button>
-                    <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Reisekosten</h1>
+                    <h1 style={{ margin: 0, fontSize: window.innerWidth < 640 ? '1.25rem' : '1.5rem' }}>Reisekosten</h1>
                 </div>
                 <button
                     onClick={() => navigate('/travel/new')}
+                    className="btn btn-primary"
                     style={{
-                        padding: '0.75rem 1.25rem',
-                        backgroundColor: '#10b981',
-                        color: 'white',
-                        border: 'none',
+                        padding: window.innerWidth < 640 ? '0.5rem 1rem' : '0.75rem 1.25rem',
+                        fontSize: window.innerWidth < 640 ? '0.875rem' : '1rem',
                         borderRadius: 'var(--radius-md)',
-                        fontWeight: 600,
-                        cursor: 'pointer'
+                        fontWeight: 700
                     }}
                 >
-                    + Neu
+                    + {window.innerWidth < 640 ? 'Neu' : 'Neuer Bericht'}
                 </button>
             </header>
 
@@ -82,33 +87,52 @@ export default function TravelExpenses() {
                             key={report.name}
                             className="card"
                             onClick={() => navigate(`/travel/${report.name}`)}
-                            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', cursor: 'pointer' }}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.75rem',
+                                cursor: 'pointer',
+                                padding: '1.25rem',
+                                transition: 'transform 0.1s, box-shadow 0.1s'
+                            }}
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <div>
-                                    <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{report.trip_description}</div>
-                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                        {report.destination}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-color)', marginBottom: '0.25rem', lineHeight: 1.3 }}>
+                                        {report.trip_description}
+                                    </div>
+                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                        📍 {report.destination}
                                     </div>
                                 </div>
                                 <div style={{
-                                    backgroundColor: getStatusColor(report.status) + '20',
-                                    color: getStatusColor(report.status),
-                                    padding: '0.25rem 0.75rem',
-                                    borderRadius: '999px',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 600
+                                    backgroundColor: getStatusColor(report.status),
+                                    color: 'white',
+                                    padding: '0.35rem 0.75rem',
+                                    borderRadius: 'var(--radius-full)',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.025em',
+                                    whiteSpace: 'nowrap'
                                 }}>
                                     {report.status}
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-                                <div style={{ fontSize: '0.875rem' }}>
-                                    {format(new Date(report.from_date), 'dd.MM.yyyy', { locale: de })}
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginTop: '0.25rem',
+                                borderTop: '1px solid #f1f5f9',
+                                paddingTop: '0.75rem'
+                            }}>
+                                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                                    📅 {format(new Date(report.from_date), 'dd.MM.yyyy', { locale: de })}
                                     {report.from_date !== report.to_date && ` - ${format(new Date(report.to_date), 'dd.MM.yyyy', { locale: de })}`}
                                 </div>
-                                <div style={{ fontWeight: 600 }}>
+                                <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--primary-color)' }}>
                                     {report.total_amount?.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) || '0,00 €'}
                                 </div>
                             </div>
