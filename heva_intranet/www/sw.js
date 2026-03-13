@@ -1,10 +1,11 @@
-const CACHE_NAME = 'heva-intranet-v2';
+const CACHE_NAME = 'heva-intranet-v3';
 const STATIC_ASSETS = [
     '/intranet',
 ];
 
 // Install: pre-cache shell
 self.addEventListener('install', (event) => {
+    console.log('SW V3: Installing...');
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
     );
@@ -13,10 +14,16 @@ self.addEventListener('install', (event) => {
 
 // Activate: clean old caches
 self.addEventListener('activate', (event) => {
+    console.log('SW V3: Activating and cleaning old caches...');
     event.waitUntil(
         caches.keys().then((keys) =>
             Promise.all(
-                keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+                keys.map((key) => {
+                    if (key !== CACHE_NAME) {
+                        console.log('SW V3: Deleting old cache:', key);
+                        return caches.delete(key);
+                    }
+                })
             )
         )
     );
