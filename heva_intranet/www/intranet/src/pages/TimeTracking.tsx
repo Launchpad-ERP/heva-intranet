@@ -35,8 +35,10 @@ export default function TimeTracking() {
     });
 
     useEffect(() => {
-        loadData();
-    }, [authContext?.user]);
+        if (authContext?.user?.name) {
+            loadData();
+        }
+    }, [authContext?.user?.name]);
 
     async function getCoordinates(): Promise<{ lat?: number; long?: number }> {
         setIsGpsLoading(true);
@@ -67,13 +69,19 @@ export default function TimeTracking() {
     }
 
     async function loadData() {
+        if (!authContext?.user?.name) {
+            console.warn('TimeTracking: loadData called without user name');
+            return;
+        }
         setLoading(true);
         try {
+            console.log('TimeTracking: Fetching entries with filters...');
             const [todayList, recent, projectList] = await Promise.all([
-                timeTrackingApi.getTodayEntry(authContext?.user?.name), // Pass user name
-                timeTrackingApi.getRecentEntries(7, authContext?.user?.name),
+                timeTrackingApi.getTodayEntry(authContext.user.name),
+                timeTrackingApi.getRecentEntries(7, authContext.user.name),
                 timeTrackingApi.getProjects()
             ]);
+            console.log('TimeTracking: Data loaded. Recent entries count:', recent.length);
             setTodayEntry(todayList.length > 0 ? todayList[0] : null);
             setRecentEntries(recent);
             setProjects(projectList);

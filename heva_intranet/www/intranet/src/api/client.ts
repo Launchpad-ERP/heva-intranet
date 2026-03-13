@@ -59,6 +59,11 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}): Promis
         });
     }
 
+    // Add cache-buster to GET requests
+    if (method === 'GET') {
+        url.searchParams.append('_', Date.now().toString());
+    }
+
     const requestHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
