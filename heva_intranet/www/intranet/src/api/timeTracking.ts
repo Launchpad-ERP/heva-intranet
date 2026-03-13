@@ -61,9 +61,17 @@ export const timeTrackingApi = {
         });
     },
 
-    getRecentEntries: (days: number = 7) => {
+    getRecentEntries: (days: number = 7, userEmail?: string) => {
         const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - days);
+
+        const filters: any[] = [
+            ['date', '>=', fromDate.toISOString().split('T')[0]]
+        ];
+
+        if (userEmail) {
+            filters.push(['user', '=', userEmail]);
+        }
 
         return api<TimeEntry[]>('frappe.client.get_list', {
             method: 'GET',
@@ -74,9 +82,7 @@ export const timeTrackingApi = {
                     'clock_in', 'clock_out', 'break_duration', 'is_onsite', 'notes',
                     'working_hours', 'overtime_hours'
                 ]),
-                filters: JSON.stringify([
-                    ['date', '>=', fromDate.toISOString().split('T')[0]]
-                ]),
+                filters: JSON.stringify(filters),
                 order_by: 'date desc',
                 limit_page_length: '30'
             }

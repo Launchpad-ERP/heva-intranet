@@ -71,7 +71,7 @@ export default function TimeTracking() {
         try {
             const [todayList, recent, projectList] = await Promise.all([
                 timeTrackingApi.getTodayEntry(authContext?.user?.name), // Pass user name
-                timeTrackingApi.getRecentEntries(7),
+                timeTrackingApi.getRecentEntries(7, authContext?.user?.name),
                 timeTrackingApi.getProjects()
             ]);
             setTodayEntry(todayList.length > 0 ? todayList[0] : null);
