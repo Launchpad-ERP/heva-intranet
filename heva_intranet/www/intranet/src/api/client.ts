@@ -78,6 +78,7 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}): Promis
             headers: requestHeaders,
             body: data ? JSON.stringify(data) : undefined,
             credentials: 'include',
+            cache: 'no-store', // Disable caching to ensure fresh data
         });
 
         if (!response.ok) {

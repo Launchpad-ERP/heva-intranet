@@ -40,7 +40,7 @@ export const timeTrackingApi = {
         const today = new Date().toISOString().split('T')[0];
         const filters: any[] = [['date', '=', today]];
         if (userEmail) {
-            filters.push(['owner', '=', userEmail]);
+            filters.push(['user', '=', userEmail]);
         }
 
         return api<TimeEntry[]>('frappe.client.get_list', {
