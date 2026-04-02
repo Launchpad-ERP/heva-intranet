@@ -167,21 +167,39 @@ export default function AdminTimeTracking() {
                                     </span>
                                 </td>
                                 <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                    <button
-                                        className="btn"
-                                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', border: '1px solid #e2e8f0', backgroundColor: 'white' }}
-                                        onClick={() => {
-                                            setEditingEntry(entry);
-                                            setEditData({
-                                                clock_in: entry.clock_in,
-                                                clock_out: entry.clock_out,
-                                                break_duration: entry.break_duration,
-                                                notes: entry.notes
-                                            });
-                                        }}
-                                    >
-                                        Edit
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                        <button
+                                            className="btn"
+                                            style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', border: '1px solid #e2e8f0', backgroundColor: 'white' }}
+                                            onClick={() => {
+                                                setEditingEntry(entry);
+                                                setEditData({
+                                                    clock_in: entry.clock_in,
+                                                    clock_out: entry.clock_out,
+                                                    break_duration: entry.break_duration,
+                                                    notes: entry.notes
+                                                });
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn"
+                                            style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', border: '1px solid #fee2e2', backgroundColor: '#fef2f2', color: '#dc2626' }}
+                                            onClick={async () => {
+                                                if (window.confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
+                                                    try {
+                                                        await adminApi.deleteEntry(entry.name);
+                                                        fetchEntries();
+                                                    } catch (e) {
+                                                        alert('Fehler beim Löschen.');
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            Löschen
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

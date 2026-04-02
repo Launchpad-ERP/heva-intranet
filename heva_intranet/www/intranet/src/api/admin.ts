@@ -112,6 +112,15 @@ export const adminApi = {
             }
         }),
 
+    deleteEntry: (entryName: string) =>
+        api('frappe.client.delete', {
+            method: 'POST',
+            data: {
+                doctype: 'Intranet Time Entry',
+                name: entryName
+            }
+        }),
+
     // Absence Management
     getAllAbsenceRequests: (filters: any[] = []) =>
         api<AbsenceRequest[]>('frappe.client.get_list', {
