@@ -124,17 +124,16 @@ export const timeTrackingApi = {
         const now = new Date();
         const time = now.toTimeString().split(' ')[0];
 
-        return api('frappe.client.set_value', {
+        return api('heva_intranet.api.update_time_entry', {
             method: 'POST',
             data: {
-                doctype: 'Intranet Time Entry',
                 name: entryName,
-                fieldname: {
+                data: JSON.stringify({
                     clock_out: time,
                     clock_out_lat: lat,
                     clock_out_long: long,
                     status: 'Abgeschlossen'
-                }
+                })
             }
         });
     },
@@ -165,15 +164,14 @@ export const timeTrackingApi = {
 
         const totalBreakDuration = currentBreakDuration + thisBreakHours;
 
-        return api('frappe.client.set_value', {
+        return api('heva_intranet.api.update_time_entry', {
             method: 'POST',
             data: {
-                doctype: 'Intranet Time Entry',
                 name: entryName,
-                fieldname: {
+                data: JSON.stringify({
                     break_end: endTime,
                     break_duration: totalBreakDuration
-                }
+                })
             }
         });
     },
@@ -199,12 +197,11 @@ export const timeTrackingApi = {
         project?: string;
         notes?: string;
     }) => {
-        return api('frappe.client.set_value', {
+        return api('heva_intranet.api.update_time_entry', {
             method: 'POST',
             data: {
-                doctype: 'Intranet Time Entry',
                 name: entryName,
-                fieldname: data
+                data: JSON.stringify(data)
             }
         });
     },

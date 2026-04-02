@@ -104,12 +104,11 @@ export const adminApi = {
         }),
 
     updateEntry: (entryName: string, data: any) =>
-        api('frappe.client.set_value', {
+        api('heva_intranet.api.update_time_entry', {
             method: 'POST',
             data: {
-                doctype: 'Intranet Time Entry',
                 name: entryName,
-                fieldname: data
+                data: JSON.stringify(data)
             }
         }),
 
